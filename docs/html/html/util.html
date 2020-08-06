@@ -1,0 +1,208 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>TouchSim helper functions</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-01-27"><meta name="DC.source" content="util.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>TouchSim helper functions</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">plot_hand</a></li><li><a href="#3">locate</a></li><li><a href="#4">hand2pixel</a></li><li><a href="#5">pixel2hand</a></li><li><a href="#6">apply_ramp</a></li><li><a href="#7">apply_sine_ramp</a></li></ul></div><h2 id="1">plot_hand</h2><p><tt>[orig,theta,pxl_per_mm,regionprop] = plot_hand(varargin)</tt>: Plots hand model, returns parameters of hand coordinate system</p><p><b>Inputs and Outputs</b></p><div><ul><li><tt>varargin</tt>: Plotting paramenters. If the first argument is an axis handle, output will be plotted in there; if instead <tt>NaN</tt> is supplied, no plot will be generated, but all output parameters will be returned; if neither, then a new figure will be generated. Other arguments: Set <tt>'names'</tt> to true to show subpart names (default: <tt>false</tt>); set <tt>'axes'</tt> to true to make axes visible (default: <tt>false</tt>); set <tt>'centers'</tt> to true to plot a point on subparts centers  (default: <tt>false</tt>); set <tt>'afferents'</tt> with an afferent population to add colored dots at afferent locations; set <tt>'color'</tt> to Nx3 matrix to override afferent default colors; set <tt>'region'</tt> to a string (ex: <tt>'D2d'</tt>) to only plot part of hand; set <tt>'scalebar'</tt> to <tt>true</tt> to make scalebar visible (default: <tt>true</tt>).</li><li><tt>orig</tt>: Origin of the hand reference frame in pixels.</li><li><tt>theta</tt>: Rotation angle from pixel coordinates to hand coordinates.</li><li><tt>pxl_per_mm</tt>: Scaling constant to convert from pixels to mm.</li><li><tt>regionprop</tt>: Properties of the different hand subparts</li></ul></div><p><b>Examples</b></p><pre class="codeinput"><span class="comment">%plot hand model with region names and centers</span>
+plot_hand(<span class="string">'names'</span>,true,<span class="string">'centers'</span>,true);
+</pre><img vspace="5" hspace="5" src="util_01.png" alt=""> <h2 id="3">locate</h2><p><tt>region = locate(locs)</tt>: Determines hand region for each afferent or pin location.</p><p><b>Inputs and Outputs</b></p><div><ul><li><tt>locs</tt>: Can be of type Afferent, AfferentPopulation, or Stimulus; alternatively Nx2 array of afferent/pin locations.</li><li><tt>region</tt>: Nested cell array of size N(1x3) containing region tags for each location. Returns empty array for each location outside the hand.</li></ul></div><p><b>Examples</b></p><pre class="codeinput"><span class="comment">% extract region for single Afferent</span>
+a = Afferent(<span class="string">'SA1'</span>,<span class="string">'location'</span>,[5 0]);
+region = locate(a);
+region{:}
+</pre><pre class="codeoutput">
+ans =
+
+  1&times;3 cell array
+
+    'D2'    'd'    't'
+
+</pre><h2 id="4">hand2pixel</h2><p><tt>pixel_locs = locate(hand_locs)</tt>: Transforms from hand coordinates (with the D2 tip as center and units in mm) to pixel coordinates (as displayed by the plot_hand() function).</p><p><b>Inputs and Outputs</b></p><div><ul><li><tt>hand_locs</tt>: Nx2 array of locations on the hand (in hand coordinates).</li><li><tt>pixel_locs</tt>: Nx2 array of same locations in pixel space.</li></ul></div><h2 id="5">pixel2hand</h2><p><tt>hand_locs = locate(pixel_locs)</tt>: Transforms from pixel coordinates (as displayed by the plot_hand() function) to hand coordinates (with the D2 tip as center and units in mm).</p><p><b>Inputs and Outputs</b></p><div><ul><li><tt>pixel_locs</tt>: Nx2 array of same locations in pixel space.</li><li><tt>hand_locs</tt>: Nx2 array of locations on the hand (in hand coordinates).</li></ul></div><h2 id="6">apply_ramp</h2><p><tt>trace = apply_ramp(trace,len,samp_freq)</tt>: Applies a linear up/down ramp to the beginning and end of a stimulus trace.</p><p><b>Inputs</b></p><div><ul><li><tt>trace</tt>: Vector representing stimulus trace</li><li><tt>len</tt>: Length of ramp in s (if <tt>samp_freq</tt> set), otherwise length in bins</li><li><tt>samp_freq</tt>: Sampling frequency of <tt>trace</tt> in Hz, changes interpretation of <tt>len</tt> if omitted.</li></ul></div><p><b>Examples</b></p><pre class="codeinput">trace = .5*sin(linspace(0,0.3,1500)*2*pi*100);
+trace_with_ramp = apply_ramp(trace,0.1,5000);
+figure
+hold <span class="string">on</span>
+plot(trace)
+plot(trace_with_ramp)
+</pre><img vspace="5" hspace="5" src="util_02.png" alt=""> <h2 id="7">apply_sine_ramp</h2><p><tt>trace = apply_sine_ramp(trace,len,samp_freq)</tt>: Applies a sinusoidal up/down ramp to the beginning and end of a stimulus trace.</p><p><b>Inputs</b></p><div><ul><li><tt>trace</tt>: Vector representing stimulus trace</li><li><tt>len</tt>: Length of ramp in s (if <tt>samp_freq</tt> set), otherwise length in bins</li><li><tt>samp_freq</tt>: Sampling frequency of <tt>trace</tt> in Hz, changes interpretation of <tt>len</tt> if omitted.</li></ul></div><p><b>Examples</b></p><pre class="codeinput">trace = .5*sin(linspace(0,0.3,1500)*2*pi*100);
+trace_with_ramp = apply_sine_ramp(trace,0.1,5000);
+figure
+hold <span class="string">on</span>
+plot(trace)
+plot(trace_with_ramp)
+</pre><img vspace="5" hspace="5" src="util_03.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% TouchSim helper functions
+
+%% plot_hand
+% |[orig,theta,pxl_per_mm,regionprop] = plot_hand(varargin)|: Plots hand
+% model, returns parameters of hand coordinate system
+%
+% *Inputs and Outputs*
+%
+% * |varargin|: Plotting paramenters. If the first argument is an axis
+% handle, output will be plotted in there; if instead |NaN| is supplied, no
+% plot will be generated, but all output parameters will be returned; if
+% neither, then a new figure will be generated. Other arguments: Set
+% |'names'| to true to show subpart names (default: |false|); set |'axes'| to
+% true to make axes visible (default: |false|); set |'centers'| to true to plot
+% a point on subparts centers  (default: |false|); set |'afferents'| with an
+% afferent population to add colored dots at afferent locations; set
+% |'color'| to Nx3 matrix to override afferent default colors; set
+% |'region'| to a string (ex: |'D2d'|) to only plot part of hand; set
+% |'scalebar'| to |true| to make scalebar visible (default: |true|).
+% * |orig|: Origin of the hand reference frame in pixels.
+% * |theta|: Rotation angle from pixel coordinates to hand coordinates.
+% * |pxl_per_mm|: Scaling constant to convert from pixels to mm.
+% * |regionprop|: Properties of the different hand subparts
+%
+% *Examples*
+
+%% 
+
+%plot hand model with region names and centers
+plot_hand('names',true,'centers',true);
+
+%% locate
+% |region = locate(locs)|: Determines hand region for each afferent or pin
+% location.
+%
+% *Inputs and Outputs*
+%
+% * |locs|: Can be of type Afferent, AfferentPopulation, or Stimulus;
+% alternatively Nx2 array of afferent/pin locations.
+% * |region|: Nested cell array of size N(1x3) containing region tags for each
+% location. Returns empty array for each location outside the hand.
+%
+% *Examples*
+
+% extract region for single Afferent
+a = Afferent('SA1','location',[5 0]);
+region = locate(a);
+region{:}
+
+%% hand2pixel
+% |pixel_locs = locate(hand_locs)|: Transforms from hand coordinates (with
+% the D2 tip as center and units in mm) to pixel coordinates (as displayed
+% by the plot_hand() function).
+%
+% *Inputs and Outputs*
+%
+% * |hand_locs|: Nx2 array of locations on the hand (in hand coordinates).
+% * |pixel_locs|: Nx2 array of same locations in pixel space.
+
+%% pixel2hand
+% |hand_locs = locate(pixel_locs)|: Transforms from pixel coordinates (as
+% displayed by the plot_hand() function) to hand coordinates (with
+% the D2 tip as center and units in mm).
+%
+% *Inputs and Outputs*
+%
+% * |pixel_locs|: Nx2 array of same locations in pixel space.
+% * |hand_locs|: Nx2 array of locations on the hand (in hand coordinates).
+
+%% apply_ramp
+% |trace = apply_ramp(trace,len,samp_freq)|: Applies a linear up/down ramp
+% to the beginning and end of a stimulus trace.
+%
+% *Inputs*
+%
+% * |trace|: Vector representing stimulus trace
+% * |len|: Length of ramp in s (if |samp_freq| set), otherwise length in
+% bins
+% * |samp_freq|: Sampling frequency of |trace| in Hz, changes
+% interpretation of |len| if omitted.
+%
+% *Examples*
+
+trace = .5*sin(linspace(0,0.3,1500)*2*pi*100);
+trace_with_ramp = apply_ramp(trace,0.1,5000);
+figure
+hold on
+plot(trace)
+plot(trace_with_ramp)
+
+%% apply_sine_ramp
+% |trace = apply_sine_ramp(trace,len,samp_freq)|: Applies a sinusoidal up/down ramp
+% to the beginning and end of a stimulus trace.
+%
+% *Inputs*
+%
+% * |trace|: Vector representing stimulus trace
+% * |len|: Length of ramp in s (if |samp_freq| set), otherwise length in
+% bins
+% * |samp_freq|: Sampling frequency of |trace| in Hz, changes
+% interpretation of |len| if omitted.
+%
+% *Examples*
+
+trace = .5*sin(linspace(0,0.3,1500)*2*pi*100);
+trace_with_ramp = apply_sine_ramp(trace,0.1,5000);
+figure
+hold on
+plot(trace)
+plot(trace_with_ramp)
+
+##### SOURCE END #####
+--></body></html>

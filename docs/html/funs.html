@@ -1,0 +1,432 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>TouchSim generator functions</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-01-27"><meta name="DC.source" content="funs.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>TouchSim generator functions</h1><!--introduction--><p>TouchSim provides a number of functions to generate commonly used <tt>AfferentPopulation</tt> and <tt>Stimulus</tt> objects. Functions starting with <tt>affpop_</tt> generate <tt>AfferentPopulations</tt>, functions starting with <tt>stim_</tt> generate <tt>Stimulus</tt> objects, and functions starting with <tt>shape_</tt> generate pin layouts that can form the basis of complex shapes indenting the skin.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">affpop_single_models</a></li><li><a href="#4">affpop_linear</a></li><li><a href="#5">affpop_grid</a></li><li><a href="#6">affpop_hand</a></li><li><a href="#9">stim_ramp</a></li><li><a href="#10">stim_sine</a></li><li><a href="#12">stim_grasp</a></li><li><a href="#13">stim_indent_shape</a></li><li><a href="#15">shape_bar</a></li><li><a href="#16">shape_circle</a></li><li><a href="#17">shape_square_grating</a></li><li><a href="#18">shape_letter</a></li></ul></div><h2 id="1">affpop_single_models</h2><p><tt>a = affpop_single_models(loc,class,varargin)</tt>: Constructs an AfferentPopulation containing all 17 individual neuron models or a subset.</p><p><b>Inputs</b></p><div><ul><li><tt>loc</tt>: Location, default <tt>[0 0]</tt>.</li><li><tt>class</tt>: Afferent class, all if empty.</li><li><tt>varargin</tt>: Parameters to be passed to Afferent constructor.</li></ul></div><p><b>Examples</b></p><pre class="codeinput"><span class="comment">% generate all 4 SA1 models, located at the origin, turn off input jitter</span>
+a = affpop_single_models([],<span class="string">'SA1'</span>,<span class="string">'noisy'</span>,false);
+a.class
+</pre><pre class="codeoutput">
+ans =
+
+  1&times;4 cell array
+
+    'SA1'    'SA1'    'SA1'    'SA1'
+
+</pre><pre class="codeinput">a.afferents(1).location
+</pre><pre class="codeoutput">
+ans =
+
+     0     0
+
+</pre><pre class="codeinput">a.afferents(1).noisy
+</pre><pre class="codeoutput">
+ans =
+
+  logical
+
+   0
+
+</pre><h2 id="4">affpop_linear</h2><p><tt>a = affpop_linear(dist,max_extent,class,idx,varargin)</tt>: Constructs an AfferentPopulation with units spaced equidistant along a line, starting at the origin.</p><p><b>Inputs</b></p><div><ul><li><tt>dist</tt>: Distance between neighboring afferent locations, default 1 mm.</li><li><tt>max_extent</tt>: Distance of farthest afferent, default 160 mm.</li><li><tt>class</tt>: Afferent class, all if empty.</li><li><tt>idx</tt>: Afferent model index, all if empty.</li><li><tt>varargin</tt>: Parameters to be passed to Afferent constructor.</li></ul></div><p><b>Examples</b></p><pre class="codeinput">a = affpop_linear(10,[],<span class="string">'PC'</span>,1);
+plot(a)
+</pre><img vspace="5" hspace="5" src="funs_01.png" alt=""> <h2 id="5">affpop_grid</h2><p><tt>a = affpop_grid(dist,max_extent,class,idx,varargin)</tt>: Constructs an AfferentPopulation with units spaced equidistant across a grid, centered on the origin.</p><p><b>Inputs</b></p><div><ul><li><tt>dist</tt>: Distance between neighboring afferent locations, default 1 mm.</li><li><tt>max_extent</tt>: Distance between farthest afferents, default 10 mm.</li><li><tt>class</tt>: Afferent class, all if empty.</li><li><tt>idx</tt>: Afferent model index, all if empty.</li><li><tt>varargin</tt>: Parameters to be passed to Afferent constructor.</li></ul></div><p><b>Examples</b></p><pre class="codeinput">a = affpop_grid();
+plot(a,[],<span class="string">'region'</span>,<span class="string">'D2d'</span>)
+</pre><img vspace="5" hspace="5" src="funs_02.png" alt=""> <h2 id="6">affpop_hand</h2><p><tt>a = affpop_hand(region,density_ratio,class,varargin)</tt>: Constructs an AfferentPopulation covering the hand or regions of it, using realistic innervation densities.</p><p><b>Inputs</b></p><div><ul><li><tt>region</tt>: Hand region to be populated, use <tt>[]</tt> for full hand,    'D2' for a full finger, e.g. D2    'D2d' for a part, e.g. tip of D2</li><li><tt>density_ratio</tt>: Allows to lower innervation densities (for faster   compute times), while keeping the differences between regions intact,   default 1. Different density ratios for tip, finger, and palm can be   chosen by supplying a three-element vector.</li><li><tt>class</tt>: Afferent class, default <tt>[]</tt> (all).</li><li><tt>varargin</tt>: Parameters to be passed to Afferent constructor.</li></ul></div><p><b>Examples</b></p><pre class="codeinput"><span class="comment">% populate whole hand, only generate 30% of afferents</span>
+a = affpop_hand([],0.3);
+plot(a)
+</pre><img vspace="5" hspace="5" src="funs_03.png" alt=""> <pre class="codeinput"><span class="comment">% populate only index finger, using true innervation densities</span>
+a = affpop_hand(<span class="string">'D2'</span>);
+plot(a,[],<span class="string">'region'</span>,<span class="string">'D2'</span>)
+</pre><img vspace="5" hspace="5" src="funs_04.png" alt=""> <pre class="codeinput"><span class="comment">% populate index fingertip, using PC models only</span>
+a = affpop_hand(<span class="string">'D2d'</span>,[],<span class="string">'PC'</span>);
+plot(a,[],<span class="string">'region'</span>,<span class="string">'D2d'</span>)
+</pre><img vspace="5" hspace="5" src="funs_05.png" alt=""> <h2 id="9">stim_ramp</h2><p><tt>s = stim_ramp(amp,len,loc,samp_freq,ramp_len,ramp_type,pin_size,pre_indent)</tt>: Constructs a Stimulus simulating a simple ramp-up/hold/ramp-down indentation using a single circular probe.</p><p><b>Inputs</b></p><div><ul><li><tt>amp</tt>: Indentation amplitude in mm, default 1.</li><li><tt>len</tt>: Total duration of stimulus in s, default 1.</li><li><tt>loc</tt>: Stimulus location in mm, default <tt>[0 0]</tt>.</li><li><tt>samp_freq</tt>: Sampling frequency in Hz, default 5000.</li><li><tt>ramp_len</tt>: Duration of on and off ramps in s, default 0.05.</li><li><tt>ramp_type</tt>: 'lin' or 'sine', default 'lin'.</li><li><tt>pin_size</tt>: Probe radius in mm.</li><li><tt>pre_indent</tt>: Static indentation throughout trial, default: 0</li></ul></div><p><b>Examples</b></p><pre class="codeinput">s = stim_ramp(0.75,0.25,[],[],[],<span class="string">'sine'</span>);
+figure
+plot(s)
+</pre><img vspace="5" hspace="5" src="funs_06.png" alt=""> <h2 id="10">stim_sine</h2><p><tt>s = stim_sine(freq,amp,phase,len,loc,samp_freq,ramp_len,pin_size,pre_indent)</tt>: Constructs a Stimulus simulating a (potentially poly-harmonic) sinusoidal vibration using a single circular probe.</p><p><b>Inputs</b></p><div><ul><li><tt>freq</tt>: Vector of frequencies in Hz.</li><li><tt>amp</tt>: Vector of amplitudes in mm.</li><li><tt>phase</tt>: Vector of phases in degrees.</li><li><tt>len</tt>: Stimulus duration in s, default: 1</li><li><tt>loc</tt>: Stimulus location in mm, default <tt>[0 0]</tt>.</li><li><tt>samp_freq</tt>: Sampling frequency in Hz, default 5000.</li><li><tt>ramp_len</tt>: Duration of on and off ramps in s, default 0.05.</li><li><tt>pin_size</tt>: Probe radius in mm.</li><li><tt>pre_indent</tt>: Static indentation throughout trial, default: 0</li></ul></div><p><b>Examples</b></p><pre class="codeinput"><span class="comment">% generate a simple sine wave at 50 Hz.</span>
+s = stim_sine(50,0.1,[],0.2);
+figure
+plot(s)
+</pre><pre class="codeoutput">Warning: Negative indentation found: proceed with caution ! 
+</pre><img vspace="5" hspace="5" src="funs_07.png" alt=""> <pre class="codeinput"><span class="comment">% generate a diharmonic wave</span>
+s = stim_sine([50 30],[0.1 0.2],[0 90],0.2);
+figure
+plot(s)
+</pre><pre class="codeoutput">Warning: Negative indentation found: proceed with caution ! 
+</pre><img vspace="5" hspace="5" src="funs_08.png" alt=""> <h2 id="12">stim_grasp</h2><p><tt>s = stim_grasp(digits,trace,delay)</tt>: Constructs a Stimulus simulating a multi-finger grasp, by indenting probes onto fingertips.</p><p><b>Inputs</b></p><div><ul><li><tt>digits</tt>: Vector with finger indices (1-5), default <tt>[1 2]</tt>.</li><li><tt>trace</tt>: Stimulus object containing a single pin and time course, whose   parameters and trace will be applied to all pins in the grasp, default   <tt>stim_ramp(0.75,.25,[],[],0.05,'lin',5)</tt>.</li><li><tt>delay</tt>: Delays between individual fingers in starting their trace,   default <tt>zeros(1,numel(digits))</tt>.</li></ul></div><p><b>Examples</b></p><pre class="codeinput"><span class="comment">% generate two-finger grasp stimulus using thumb and index finger</span>
+s = stim_grasp();
+figure
+plot(s)
+</pre><img vspace="5" hspace="5" src="funs_09.png" alt=""> <h2 id="13">stim_indent_shape</h2><p><tt>s = stim_indent_shape(shape,trace,pin_offset,samp_freq)</tt>: Constructs a Stimulus by applying a single-probe stimulus trace to multiple pins to generate spatially complex stimuli. Note that <tt>pin_radius</tt> in the <tt>trace</tt> object needs to be set so that neighboring pins are not overlapping, or will be automatically adjusted.</p><p><b>Inputs</b></p><div><ul><li><tt>shape</tt>: Pin positions making up object shape, e.g. <tt>shape_bar()</tt>.</li><li><tt>trace</tt>: Indentation trace, e.g. <tt>stim_ramp()</tt>.</li><li><tt>pin_offset</tt>: Indentation offset for each pin, allows complex shapes that are not flat, default: 0.</li><li><tt>samp_freq</tt>: Sampling frequency of <tt>trace</tt>, only necessary if trace is   not a Stimulus object.</li></ul></div><p><b>Examples</b></p><pre class="codeinput"><span class="comment">% indent letter-shaped object into the skin, using ramp-and-hold</span>
+<span class="comment">% indentation.</span>
+s = stim_indent_shape(shape_letter(<span class="string">'B'</span>,10),stim_ramp([],0.2));
+figure
+plot(s)
+</pre><img vspace="5" hspace="5" src="funs_10.png" alt=""> <pre class="codeinput"><span class="comment">% generate bar stimulus and vibrate it on skin at 25 Hz.</span>
+<span class="comment">%s = stim_indent_shape(shape_bar(),stim_sine(25,0.3,0,0.2,[],[],[],[],0.5));</span>
+<span class="comment">%plot(s)</span>
+</pre><h2 id="15">shape_bar</h2><p><tt>shape = shape_bar(width,height,angle,pins_per_mm)</tt>: Constructs a Nx2 matrix of pin locations in the shape of a bar.</p><p><b>Inputs</b></p><div><ul><li><tt>width</tt>: width of the bar in mm, default 5 mm.</li><li><tt>height</tt>: height of the bar in mm, default 0.5 mm</li><li><tt>angle</tt>: Rotation angle of bar in degrees, default 0.</li><li><tt>pins_per_mm</tt>: Number of pins per mm, default 10.</li></ul></div><p><b>Examples</b></p><pre class="codeinput"><span class="comment">% generate a bar angled at 45 degrees and indent into the skin</span>
+shape = shape_bar([],[],45);
+figure
+plot(shape(:,1),shape(:,2),<span class="string">'o'</span>)
+</pre><img vspace="5" hspace="5" src="funs_11.png" alt=""> <h2 id="16">shape_circle</h2><p><tt>shape = shape_circle(radius,pins_per_mm)</tt>: Constructs a Nx2 matrix of pin locations in the shape of a filled circle. Note that unless the pins do not move in synchrony, a single pin with bigger radius will leave to equivalent results, but execute much faster.</p><p><b>Inputs</b></p><div><ul><li><tt>radius</tt>: Radius of the circle in mm, default 2 mm.</li><li><tt>pins_per_mm</tt>: Number of pins per mm, default 10.</li></ul></div><p><b>Examples</b></p><pre class="codeinput"><span class="comment">% generate a circular stimulus</span>
+shape = shape_circle();
+figure
+plot(shape(:,1),shape(:,2),<span class="string">'o'</span>)
+</pre><img vspace="5" hspace="5" src="funs_12.png" alt=""> <h2 id="17">shape_square_grating</h2><p><tt>[shape,pin_offset] = shape_square_grating(shift,pins_per_mm,period, ridge_width,radius,depth,noedge)</tt>: Constructs a Nx2 matrix of pin locations as well as a vector of pin offset that represent a square grating that can then be indented or scanned across the skin.</p><p><b>Inputs</b></p><div><ul><li><tt>shift</tt>: Shift towards x direction in pins, default 0.</li><li><tt>pins_per_mm</tt>: Number of pins per mm, default 5.</li><li><tt>period</tt>: Spatial period of the grating in pins, default 10.</li><li><tt>ridge_width</tt>: Ridge width in pins, default <tt>period/2</tt>.</li><li><tt>radius</tt>: Overall contact radius in mm, default 8.</li><li><tt>depth</tt>: Groove depth in mm, default 1.</li><li><tt>noedge</tt>: Flag to set smooth edge (if true) or hard edge (if false), default true.</li></ul></div><p><b>Examples</b></p><pre class="codeinput"><span class="comment">% indent square grating into the skin</span>
+[shape,pin_offset] = shape_square_grating;
+s = stim_indent_shape(shape,stim_ramp(),pin_offset);
+plot(s)
+</pre><img vspace="5" hspace="5" src="funs_13.png" alt=""> <h2 id="18">shape_letter</h2><p><tt>shape = shape_letter(letter,wid,pins_per_mm)</tt>: Constructs a Nx2 matrix of pin locations in the shape of a letter.</p><p><b>Inputs</b></p><div><ul><li><tt>letter</tt>: Letter, default <tt>'A'</tt>.</li><li><tt>wid</tt>: Width of letter in mm, default 5.</li><li><tt>pins_per_mm</tt>: Number of pins per mm, default 10.</li></ul></div><p><b>Examples</b></p><pre class="codeinput"><span class="comment">% generate a circular stimulus</span>
+shape = shape_letter(<span class="string">'X'</span>);
+figure
+plot(shape(:,1),shape(:,2),<span class="string">'o'</span>)
+</pre><img vspace="5" hspace="5" src="funs_14.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% TouchSim generator functions
+% TouchSim provides a number of functions to generate commonly used
+% |AfferentPopulation| and |Stimulus| objects. Functions starting with
+% |affpop_| generate |AfferentPopulations|, functions starting with |stim_|
+% generate |Stimulus| objects, and functions starting with |shape_|
+% generate pin layouts that can form the basis of complex shapes indenting
+% the skin.
+
+%% affpop_single_models
+% |a = affpop_single_models(loc,class,varargin)|: Constructs an
+% AfferentPopulation containing all 17 individual neuron
+% models or a subset.
+%
+% *Inputs*
+%
+% * |loc|: Location, default |[0 0]|.
+% * |class|: Afferent class, all if empty.
+% * |varargin|: Parameters to be passed to Afferent constructor.
+%
+% *Examples*
+
+% generate all 4 SA1 models, located at the origin, turn off input jitter
+a = affpop_single_models([],'SA1','noisy',false);
+a.class
+%%
+a.afferents(1).location
+%%
+a.afferents(1).noisy
+
+%% affpop_linear
+% |a = affpop_linear(dist,max_extent,class,idx,varargin)|: Constructs an
+% AfferentPopulation with units spaced equidistant along a line, starting
+% at the origin.
+%
+% *Inputs*
+%
+% * |dist|: Distance between neighboring afferent locations, default 1 mm.
+% * |max_extent|: Distance of farthest afferent, default 160 mm.
+% * |class|: Afferent class, all if empty.
+% * |idx|: Afferent model index, all if empty.
+% * |varargin|: Parameters to be passed to Afferent constructor.
+%
+% *Examples*
+
+a = affpop_linear(10,[],'PC',1);
+plot(a)
+
+%% affpop_grid
+% |a = affpop_grid(dist,max_extent,class,idx,varargin)|: Constructs an
+% AfferentPopulation with units spaced equidistant across a grid, centered
+% on the origin.
+%
+% *Inputs*
+%
+% * |dist|: Distance between neighboring afferent locations, default 1 mm.
+% * |max_extent|: Distance between farthest afferents, default 10 mm.
+% * |class|: Afferent class, all if empty.
+% * |idx|: Afferent model index, all if empty.
+% * |varargin|: Parameters to be passed to Afferent constructor.
+%
+% *Examples*
+
+a = affpop_grid();
+plot(a,[],'region','D2d')
+
+%% affpop_hand
+% |a = affpop_hand(region,density_ratio,class,varargin)|: Constructs an
+% AfferentPopulation covering the hand or regions of it, using realistic
+% innervation densities.
+%
+% *Inputs*
+%
+% * |region|: Hand region to be populated, use |[]| for full hand,
+%    'D2' for a full finger, e.g. D2
+%    'D2d' for a part, e.g. tip of D2
+% * |density_ratio|: Allows to lower innervation densities (for faster
+%   compute times), while keeping the differences between regions intact,
+%   default 1. Different density ratios for tip, finger, and palm can be
+%   chosen by supplying a three-element vector.
+% * |class|: Afferent class, default |[]| (all).
+% * |varargin|: Parameters to be passed to Afferent constructor.
+%
+% *Examples*
+
+% populate whole hand, only generate 30% of afferents
+a = affpop_hand([],0.3);
+plot(a)
+
+%%
+
+% populate only index finger, using true innervation densities
+a = affpop_hand('D2');
+plot(a,[],'region','D2')
+
+%%
+
+% populate index fingertip, using PC models only
+a = affpop_hand('D2d',[],'PC');
+plot(a,[],'region','D2d')
+
+%% stim_ramp
+% |s = stim_ramp(amp,len,loc,samp_freq,ramp_len,ramp_type,pin_size,pre_indent)|: 
+% Constructs a Stimulus simulating a simple ramp-up/hold/ramp-down
+% indentation using a single circular probe.
+%
+% *Inputs*
+%
+% * |amp|: Indentation amplitude in mm, default 1.
+% * |len|: Total duration of stimulus in s, default 1.
+% * |loc|: Stimulus location in mm, default |[0 0]|.
+% * |samp_freq|: Sampling frequency in Hz, default 5000.
+% * |ramp_len|: Duration of on and off ramps in s, default 0.05.
+% * |ramp_type|: 'lin' or 'sine', default 'lin'.
+% * |pin_size|: Probe radius in mm.
+% * |pre_indent|: Static indentation throughout trial, default: 0
+%
+% *Examples*
+
+s = stim_ramp(0.75,0.25,[],[],[],'sine');
+figure
+plot(s)
+
+%% stim_sine
+% |s = stim_sine(freq,amp,phase,len,loc,samp_freq,ramp_len,pin_size,pre_indent)|: 
+% Constructs a Stimulus simulating a (potentially poly-harmonic) sinusoidal vibration
+% using a single circular probe.
+%
+% *Inputs*
+%
+% * |freq|: Vector of frequencies in Hz.
+% * |amp|: Vector of amplitudes in mm.
+% * |phase|: Vector of phases in degrees.
+% * |len|: Stimulus duration in s, default: 1
+% * |loc|: Stimulus location in mm, default |[0 0]|.
+% * |samp_freq|: Sampling frequency in Hz, default 5000.
+% * |ramp_len|: Duration of on and off ramps in s, default 0.05.
+% * |pin_size|: Probe radius in mm.
+% * |pre_indent|: Static indentation throughout trial, default: 0
+%
+% *Examples*
+
+% generate a simple sine wave at 50 Hz.
+s = stim_sine(50,0.1,[],0.2);
+figure
+plot(s)
+
+%%
+
+% generate a diharmonic wave
+s = stim_sine([50 30],[0.1 0.2],[0 90],0.2);
+figure
+plot(s)
+
+%% stim_grasp
+% |s = stim_grasp(digits,trace,delay)|:
+% Constructs a Stimulus simulating a multi-finger grasp, by indenting
+% probes onto fingertips.
+%
+% *Inputs*
+%
+% * |digits|: Vector with finger indices (1-5), default |[1 2]|.
+% * |trace|: Stimulus object containing a single pin and time course, whose
+%   parameters and trace will be applied to all pins in the grasp, default
+%   |stim_ramp(0.75,.25,[],[],0.05,'lin',5)|.
+% * |delay|: Delays between individual fingers in starting their trace, 
+%   default |zeros(1,numel(digits))|.
+%
+% *Examples*
+
+% generate two-finger grasp stimulus using thumb and index finger
+s = stim_grasp();
+figure
+plot(s)
+
+%% stim_indent_shape
+% |s = stim_indent_shape(shape,trace,pin_offset,samp_freq)|:
+% Constructs a Stimulus by applying a single-probe stimulus trace to
+% multiple pins to generate spatially complex stimuli. Note that
+% |pin_radius| in the |trace| object needs to be set so that neighboring
+% pins are not overlapping, or will be automatically adjusted.
+%
+% *Inputs*
+%
+% * |shape|: Pin positions making up object shape, e.g. |shape_bar()|.
+% * |trace|: Indentation trace, e.g. |stim_ramp()|.
+% * |pin_offset|: Indentation offset for each pin, allows complex shapes that 
+% are not flat, default: 0.
+% * |samp_freq|: Sampling frequency of |trace|, only necessary if trace is
+%   not a Stimulus object.
+%
+% *Examples*
+
+% indent letter-shaped object into the skin, using ramp-and-hold
+% indentation.
+s = stim_indent_shape(shape_letter('B',10),stim_ramp([],0.2));
+figure
+plot(s)
+
+%%
+
+% generate bar stimulus and vibrate it on skin at 25 Hz.
+%s = stim_indent_shape(shape_bar(),stim_sine(25,0.3,0,0.2,[],[],[],[],0.5));
+%plot(s)
+
+%% shape_bar
+% |shape = shape_bar(width,height,angle,pins_per_mm)|:
+% Constructs a Nx2 matrix of pin locations in the shape of a bar.
+%
+% *Inputs*
+%
+% * |width|: width of the bar in mm, default 5 mm.
+% * |height|: height of the bar in mm, default 0.5 mm 
+% * |angle|: Rotation angle of bar in degrees, default 0.
+% * |pins_per_mm|: Number of pins per mm, default 10.
+%
+% *Examples*
+
+% generate a bar angled at 45 degrees and indent into the skin
+shape = shape_bar([],[],45);
+figure
+plot(shape(:,1),shape(:,2),'o')
+
+%% shape_circle
+% |shape = shape_circle(radius,pins_per_mm)|:
+% Constructs a Nx2 matrix of pin locations in the shape of a filled circle.
+% Note that unless the pins do not move in synchrony, a single pin with
+% bigger radius will leave to equivalent results, but execute much faster.
+%
+% *Inputs*
+%
+% * |radius|: Radius of the circle in mm, default 2 mm.
+% * |pins_per_mm|: Number of pins per mm, default 10.
+%
+% *Examples*
+
+% generate a circular stimulus
+shape = shape_circle();
+figure
+plot(shape(:,1),shape(:,2),'o')
+
+%% shape_square_grating
+% |[shape,pin_offset] = shape_square_grating(shift,pins_per_mm,period,
+% ridge_width,radius,depth,noedge)|:
+% Constructs a Nx2 matrix of pin locations as well as a vector of
+% pin offset that represent a square grating that can then be indented or
+% scanned across the skin.
+%
+% *Inputs*
+%
+% * |shift|: Shift towards x direction in pins, default 0.
+% * |pins_per_mm|: Number of pins per mm, default 5.
+% * |period|: Spatial period of the grating in pins, default 10.
+% * |ridge_width|: Ridge width in pins, default |period/2|.
+% * |radius|: Overall contact radius in mm, default 8.
+% * |depth|: Groove depth in mm, default 1.
+% * |noedge|: Flag to set smooth edge (if true) or hard edge (if false), 
+% default true.
+%
+% *Examples*
+
+% indent square grating into the skin
+[shape,pin_offset] = shape_square_grating;
+s = stim_indent_shape(shape,stim_ramp(),pin_offset);
+plot(s)
+
+%% shape_letter
+% |shape = shape_letter(letter,wid,pins_per_mm)|:
+% Constructs a Nx2 matrix of pin locations in the shape of a letter.
+%
+% *Inputs*
+%
+% * |letter|: Letter, default |'A'|.
+% * |wid|: Width of letter in mm, default 5.
+% * |pins_per_mm|: Number of pins per mm, default 10.
+%
+% *Examples*
+
+% generate a circular stimulus
+shape = shape_letter('X');
+figure
+plot(shape(:,1),shape(:,2),'o')
+
+##### SOURCE END #####
+--></body></html>

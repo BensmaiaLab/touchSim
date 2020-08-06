@@ -1,0 +1,16 @@
+--- funs.m
++++ funs.m
+@@ -2,7 +2,12 @@
+ 
+ %% Generating |AfferentPopulation| objects
+ %
+-% * |affpop_single_models|
++% <h3>|a = get_all_single_models(loc,class,varargin)|<h3>
++% Constructs an AfferentPopulation containing all 17 individual neuron models
++% * Inputs:
++% * Outputs
++% * Examples:
++%
+ % * |affpop_linear|
+ % * |affpop_grid|
+ % * |affpop_hand|

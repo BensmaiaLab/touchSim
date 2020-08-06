@@ -1,0 +1,233 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>examples</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-01-27"><meta name="DC.source" content="examples.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Understanding the hand coordinate system</a></li><li><a href="#3">Setup a single afferent and stimulus, and calculate response</a></li><li><a href="#6">Setup an afferent population and calculate response</a></li></ul></div><h2 id="1">Understanding the hand coordinate system</h2><p>Afferent and stimulus locations are expressed in a 2D coordinate system that is centered on the tip of the index finger, with the first axis running along the index finger and the second axis orthogonal to that.</p><pre class="codeinput">figure
+plot_hand(<span class="string">'axes'</span>,1)
+</pre><pre class="codeoutput">
+ans =
+
+  126.9860  452.0624
+
+</pre><img vspace="5" hspace="5" src="examples_01.png" alt=""> <p>When no locations are given <tt>Afferent</tt> and <tt>Stimulus</tt> objects are automatically placed at the origin, i.e. the index fingertip.</p><h2 id="3">Setup a single afferent and stimulus, and calculate response</h2><p>This example creates a single PC afferents, manually creates a simple stimulus, and then calculates the response.</p><pre class="codeinput"><span class="comment">% Create a PC afferent</span>
+a = Afferent(<span class="string">'PC'</span>,<span class="string">'idx'</span>,1);
+
+<span class="comment">% Generate a 80 Hz sine wave with 150 um amplitude</span>
+sf = 5000;
+t = (1/sf:1/sf:1)';
+trace = sin(2*pi*80*t)*0.15;
+rad = 0.5;<span class="comment">% pin with 0.5 mm radius</span>
+xy = [0 0]; <span class="comment">% pin coordinate</span>
+s = Stimulus(trace,xy,sf,rad);
+
+<span class="comment">% Calculate response</span>
+r = a.response(s);
+
+<span class="comment">% Show response</span>
+r.rate
+</pre><pre class="codeoutput">Warning: Negative indentation found: proceed with caution ! 
+
+ans =
+
+    81
+
+</pre><p>For commonly used stimuli, such as ramp-and-hold stimuli and sinusoidal vibrations, the model includes functions that allow generating such stimuli easily.</p><pre class="codeinput"><span class="comment">% generate the same stimulus using the stim_sine function:</span>
+s = stim_sine(80,.15);
+plot(s)
+</pre><pre class="codeoutput">Warning: Negative indentation found: proceed with caution ! 
+</pre><img vspace="5" hspace="5" src="examples_02.png" alt=""> <pre class="codeinput"><span class="comment">% Move stimulus 5 mm away and calculate response.</span>
+s = stim_sine(80,.15,[],[],[5 0]);
+
+r2 = a.response(s);
+r2.rate
+
+<span class="comment">% Plot response</span>
+figure
+plot(r2)
+</pre><pre class="codeoutput">Warning: Negative indentation found: proceed with caution ! 
+
+ans =
+
+    79
+
+</pre><img vspace="5" hspace="5" src="examples_03.png" alt=""> <h2 id="6">Setup an afferent population and calculate response</h2><pre class="codeinput"><span class="comment">% Generate a population of afferents located on the index finger</span>
+a = affpop_hand(<span class="string">'D2'</span>);
+
+<span class="comment">% Count number of PC receptors</span>
+sum(a.iPC)
+</pre><pre class="codeoutput">
+ans =
+
+   186
+
+</pre><pre class="codeinput"><span class="comment">% Plot location of receptors</span>
+figure
+plot(a)
+</pre><img vspace="5" hspace="5" src="examples_04.png" alt=""> <pre class="codeinput"><span class="comment">% calculate response</span>
+r = a.response(s);
+
+<span class="comment">% plot response (spike raster)</span>
+figure
+plot(r)
+</pre><img vspace="5" hspace="5" src="examples_05.png" alt=""> <pre class="codeinput"><span class="comment">% plot response intensity</span>
+figure
+rates=r.rate;
+rates(a.iSA1)=rates(a.iSA1)/max(rates(a.iSA1));
+rates(a.iRA)=rates(a.iRA)/max(rates(a.iRA));
+rates(a.iPC)=rates(a.iPC)/max(rates(a.iPC));
+plot(a,[],<span class="string">'rate'</span>,rates)
+</pre><img vspace="5" hspace="5" src="examples_06.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Understanding the hand coordinate system
+% Afferent and stimulus locations are expressed in a 2D coordinate system
+% that is centered on the tip of the index finger, with the first axis
+% running along the index finger and the second axis orthogonal to that.
+
+figure
+plot_hand('axes',1)
+
+%%
+% When no locations are given |Afferent| and |Stimulus| objects are
+% automatically placed at the origin, i.e. the index fingertip.
+
+%% Setup a single afferent and stimulus, and calculate response
+% This example creates a single PC afferents, manually creates a simple
+% stimulus, and then calculates the response.
+
+% Create a PC afferent
+a = Afferent('PC','idx',1);
+
+% Generate a 80 Hz sine wave with 150 um amplitude
+sf = 5000; 
+t = (1/sf:1/sf:1)'; 
+trace = sin(2*pi*80*t)*0.15;
+rad = 0.5;% pin with 0.5 mm radius
+xy = [0 0]; % pin coordinate
+s = Stimulus(trace,xy,sf,rad); 
+
+% Calculate response
+r = a.response(s);
+
+% Show response
+r.rate
+
+%%
+% For commonly used stimuli, such as ramp-and-hold stimuli and sinusoidal
+% vibrations, the model includes functions that allow generating such
+% stimuli easily.
+
+% generate the same stimulus using the stim_sine function:
+s = stim_sine(80,.15);
+plot(s)
+
+%%
+
+% Move stimulus 5 mm away and calculate response.
+s = stim_sine(80,.15,[],[],[5 0]);
+
+r2 = a.response(s);
+r2.rate
+
+% Plot response
+figure
+plot(r2)
+
+%% Setup an afferent population and calculate response
+
+% Generate a population of afferents located on the index finger
+a = affpop_hand('D2');
+
+% Count number of PC receptors
+sum(a.iPC)
+
+%%
+
+% Plot location of receptors
+figure
+plot(a)
+
+%%
+
+% calculate response
+r = a.response(s);
+
+% plot response (spike raster)
+figure
+plot(r)
+
+%%
+
+% plot response intensity
+figure
+rates=r.rate;
+rates(a.iSA1)=rates(a.iSA1)/max(rates(a.iSA1));
+rates(a.iRA)=rates(a.iRA)/max(rates(a.iRA));
+rates(a.iPC)=rates(a.iPC)/max(rates(a.iPC));
+plot(a,[],'rate',rates)
+
+##### SOURCE END #####
+--></body></html>

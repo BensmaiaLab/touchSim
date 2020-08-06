@@ -1,0 +1,649 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>TouchSim classes</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-01-27"><meta name="DC.source" content="classes.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>TouchSim classes</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Afferent</a></li><li><a href="#6">AfferentPopulation</a></li><li><a href="#7">Stimulus</a></li><li><a href="#9">Response</a></li><li><a href="#12">ResponseCollection</a></li></ul></div><h2 id="1">Afferent</h2><p>Object that represents a single tactile afferent.</p><p><b>Properties</b></p><div><ul><li><tt>class</tt>: Afferent class, needs to be <tt>'SA1'</tt>, <tt>'RA'</tt>, or <tt>'PC'</tt>.</li><li><tt>location</tt>: Location on skin in mm where afferent is terminating, default <tt>[0 0]</tt>. Coordinate system is based on the hand model with the origin centered on the tip of the index finger.</li><li><tt>depth</tt>: Depth of afferent below the skin surface in mm. Default values are chosen based on afferent class. In most cases, these values should not require changing.</li><li><tt>noisy</tt>: Adds noise to membrane potential, if set to true, otherwise model runs purely deterministically; default <tt>true</tt>.</li><li><tt>delay</tt>: If true, sets delay of afferent response to estimated delay at recording site along the nerve, necessary for model fitting but otherwise unnecessaryl default <tt>false</tt>.</li><li><tt>iSA1</tt>: true, if model is an SA1 afferents. Can be accessed, but not set.</li><li><tt>iRA</tt>: true, if model is an RA afferent. Can be accessed, but not set.</li><li><tt>iPC</tt>: true, if model is a PC afferent. Can be accessed, but not set.</li><li><tt>idx</tt>: model ID, defaults to a random value. For example, if set to 1, will select the first model of the respective afferent class. There are 4 SA1, 9 RA, and 4 PC models in total.</li><li><tt>parameters</tt>: a vector containing the 13 parameters for the spiking model, is chosen based on afferent class and model ID (<tt>idx</tt>) parameters. In general, this parameter should not be set directly.</li><li><tt>model</tt>: type of spiking model, always set to <tt>'IF'</tt>.</li></ul></div><p><b>Methods</b></p><p>
+<ul><li><tt>a = Afferent(class,varargin)</tt>: Constructs a Afferent object.
+<ul><li><tt>class</tt>: Afferent class, needs to be 'SA1', 'RA', or
+'PC'.</li>
+<li><tt>varargin</tt>: Additional afferent parameters: <tt>location:</tt>
+afferent location, default <tt>[0 0]</tt>; <tt>idx</tt>: afferent model,
+default chosen randomly from all models of given class; <tt>noisy</tt>:
+adds input jitter if true, default true; <tt>delay</tt>: adds neural delay if true,
+only needed to match fitting data, default false; <tt>parameters</tt>:
+model parameters, default automatically chosen based on <tt>class</tt>
+and <tt>idx</tt>.</li></ul></li>
+<li><tt>r = response(stim,flag_distOnHand)</tt>:Calculate afferent response
+to given stimulus, returns <tt>Response</tt> object.
+<ul><li><tt>stim</tt>: Stimulus object.</li>
+<li><tt>flag_distOnHand</tt>: Determines whether wave propagation is calculated
+based on geometry of the hand model (if set to true), or based on absolute distance
+alone, ignoring gaps between fingers (if set to false), default false. Activating
+this setting will increase computation time for wave propagation considerably, but
+this parameter is essential if the responses of afferents all over the hand are
+considered.</li></ul></li>
+<li><tt>plot(ax,col,varargin)</tt>: Generates a figure of the hand with the location
+of the afferent marked.
+<ul><li><tt>ax</tt>: Figure axis to plot in, generates a new figure by default.</li>
+<li><tt>col</tt>: Color of marker, default standard afferent color (SA1: green,
+RA: blue, PC: orange).</li>
+<li><tt>varargin</tt>: Additional parameters to be passed to <tt>plot_hand</tt>,
+as well as <tt>onehand:</tt> plots only a single hand outline if true, default false;
+<tt>rate</tt>: adjusts transparency of colored marker based on response rate provided,
+default no transparency.</li></ul></li></ul>
+</p><p><b>Examples</b></p><pre class="codeinput"><span class="comment">% generate a random PC model</span>
+a = Afferent(<span class="string">'PC'</span>);
+a.idx
+</pre><pre class="codeoutput">
+ans =
+
+  int16
+
+   4
+
+</pre><pre class="codeinput"><span class="comment">% pick the first RA model, place at [1 1], and turn off input jitter</span>
+a = Afferent(<span class="string">'RA'</span>,<span class="string">'idx'</span>,1,<span class="string">'location'</span>,[1 1],<span class="string">'noisy'</span>,false);
+a.location
+</pre><pre class="codeoutput">
+ans =
+
+     1     1
+
+</pre><pre class="codeinput">plot(a,[],[],<span class="string">'onehand'</span>,true);
+</pre><img vspace="5" hspace="5" src="classes_01.png" alt=""> <pre class="codeinput"><span class="comment">% generate simple ramp stimulus and calculate response</span>
+s = stim_ramp([],[],[1 1]);
+r = a.response(s);
+r.spikes
+</pre><pre class="codeoutput">
+ans =
+
+    0.0092    0.0216    0.0338    0.0460    0.9546    0.9718    0.9888
+
+</pre><h2 id="6">AfferentPopulation</h2><p>Object that represents a population of afferents, represented as a vector of Afferent objects.</p><p><b>Properties</b></p><div><ul><li><tt>afferents</tt>: vector containing Afferent objects. Entries can be added and deleted by the user and all other properties will automatically update.</li><li><tt>num</tt>: Number of afferents in the population. Can be accessed, but not set.</li><li><tt>class</tt>: Vector containing afferent class of each afferent.</li><li><tt>location</tt>: Matrix containing location of each afferent.</li><li><tt>depth</tt>: Vector containing depth of each afferent.</li><li><tt>iSA1</tt>: true, if model is an SA1 afferents. Can be accessed, but not set.</li><li><tt>iRA</tt>: true, if model is an RA afferent. Can be accessed, but not set.</li><li><tt>iPC</tt>: true, if model is a PC afferent. Can be accessed, but not set.</li></ul></div><p><b>Methods</b></p><p>
+<ul><li><tt>a = AfferentPopulation(afflist)</tt>: Constructs an
+<tt>AfferentPopulation</tt> object.
+<ul><li><tt>afflist</tt> (optional): Vector of <tt>Afferent</tt> objects;
+empty <tt>AfferentPopulation</tt> will be constructed if not supplied.</li></ul></li>
+<li><tt>aff_afferents(class,locs,varargin)</tt>:Generates specified
+Afferent objects and adds them to the AfferentPopulation.
+<ul><li><tt>class</tt>: Afferent class, needs to be 'SA1', 'RA', or
+'PC'.</li>
+<li><tt>locs</tt>: Matrix containing location of each
+afferent.</li>
+<li><tt>varargin</tt>: Additional parameters passed to Afferent constructor, see
+above for details.</li></ul></li>
+<li><tt>r = response(stim,flag_distOnHand)</tt>:Calculate afferent population response
+to given stimulus, returns <tt>ResponseCollection</tt> object.
+<ul><li><tt>stim</tt>: Stimulus object.</li>
+<li><tt>flag_distOnHand</tt>: Determines whether wave propagation is calculated
+based on geometry of the hand model (if set to true), or based on absolute distance
+alone, ignoring gaps between fingers (if set to false), default false. Activating
+this setting will increase computation time for wave propagation considerably, but
+this parameter is essential if the responses of afferents all over the hand are
+considered.</li></ul></li>
+<li><tt>plot(col_vec,varargin)</tt>: Generates a figure of the hand with the location
+of the afferent marked.
+<ul><li><tt>col_vec</tt>: Marker colors, default standard afferent colors (SA1: green,
+RA: blue, PC: orange).</li>
+<li><tt>varargin</tt>: Additional parameters to be passed to <tt>plot_hand</tt>,
+as well as <tt>rate</tt>: adjusts transparency of colored marker based on response rate provided,
+default no transparency.</li></ul></li></ul>
+</p><p><b>Examples</b></p><pre class="codeinput">[x,y] = meshgrid(-5:5,-5:5);
+a = AfferentPopulation();
+a.add_afferents(<span class="string">'RA'</span>,[x(:) y(:)]);
+plot(a,[],<span class="string">'region'</span>,<span class="string">'D2'</span>)
+</pre><img vspace="5" hspace="5" src="classes_02.png" alt=""> <h2 id="7">Stimulus</h2><p>Object that represents an arbitrary spatio-temporal tactile stimulus.</p><p><b>Properties</b></p><div><ul><li><tt>trace</tt>: Matrix where each column refers to the indentation trace of a single pin (in mm, positive values indent into the skin), default <tt>1+.5*sin(linspace(0,10,5000)*2*pi*10)'</tt>. Changing the <tt>trace</tt> of a <tt>Stimulus</tt> object automatically triggers recomputation of the <tt>profile</tt> and <tt>profiledyn</tt> properties, which might be slow.</li><li><tt>location</tt>: 2D matrix where each row denotes the position of one stimulus pin, default <tt>[0 0]</tt>. Changing the <tt>location</tt> of a <tt>Stimulus</tt> object automatically triggers recomputation of the <tt>profile</tt> and <tt>profiledyn</tt> properties, which might be slow.</li><li><tt>sampling_frequency</tt>: Sampling frequency of <tt>trace</tt>, default 5000. Can be accessed, but only set through the <tt>resample</tt> and <tt>update_sampling_frequency</tt> methods, see below.</li><li><tt>duration</tt>: Total duration of the stimulus in s, can be accessed but not set.</li><li><tt>pin_radius</tt>: Radius for all pins in the current Stimulus object, default <tt>0.05</tt>. Can be accessed, but not set.</li><li><tt>profile</tt>: Load profile calculated from trace, can be accessed but not set.</li><li><tt>profiledyn</tt>: Dynamic load profile calculated from trace, can be accessed but not set.</li></ul></div><p><b>Methods</b></p><p>
+<ul><li><tt>s = Stimulus(trace,location,sampling_frequency,pin_radius)</tt>:
+Constructs a Stimulus object with the given parameters.
+% <ul><li><tt>trace</tt>: Indentation trace for each pin, see above.</li>
+<li><tt>location</tt>: Pin locations, see above.</li>
+<li><tt>sampling_frequency</tt>: Sampling frequency in Hz.</li>
+<li><tt>pin_radius</tt>: Pin radius, see above.</li></ul></li>
+<li><tt>resample(sampling_freq)</tt>: Resample the stimulus trace at the
+given frequency.
+<ul><li><tt>sampling_freq</tt>: New sampling frequency.</li></ul></li>
+<li><tt>update_sampling_frequency(sampling_freq)</tt>: Update sampling
+frequency, but keep current stimulus trace; this method is useful for
+quickly changing the speed of a stimulus (e.g. indenting or sliding
+across the skin) without having to recompute the stimulus profile again.
+<ul><li><tt>sampling_freq</tt>: New sampling frequency.</li></ul></li>
+<li><tt>pad(len1,len2)</tt>: Pad the stimulus trace with zeros. This
+method triggers a recomputation of the stimulus profiles.
+<ul><li><tt>len1</tt>: Length in s of leading padding. If a single value is given,
+the same padding is applied to all pins.</li>
+<li><tt>len2</tt>: Length in s of trailing padding. If a single value is given,
+the same padding is applied to all pins. If multiple values are given
+<tt>sum(len1+len2)</tt>
+needs to result in equal values for all pins. If no value is given and <tt>len1</tt> has one element,
+both leading and trailing padding will be the same; otherwise, if <tt>len1</tt> consists of multiple
+values, <tt>len2</tt> values will be chosen such that the trace for each pin will
+have equal length.</li></ul></li>
+<li><tt>[s,stat_comp,dyn_comp] = propagate(aff,flag_distOnHand)</tt>:
+Propagates the stimulus to the given afferent(s). This method is
+automatically executed when calling <tt>Afferent.response</tt> or
+<tt>AfferentPopulation.response</tt> and needs to be called
+manually only if static or dynamic mechanics components need to be
+obtained explicitly.
+<ul><li><tt>aff</tt>: <tt>Afferent</tt> or <tt>AfferentPopulation</tt> objects.</li>
+<li><tt>flag_distOnHand</tt>: Determines whether wave propagation is calculated
+based on geometry of the hand model (if set to true), or based on absolute distance
+alone, ignoring gaps between fingers (if set to false), default false. Activating
+this setting will increase computation time for wave propagation considerably, but
+this parameter is essential if the responses of afferents all over the hand are
+considered.</li>
+<li><tt>s</tt>: A Matlab <tt>struct</tt> containing <tt>stat_comp</tt>, <tt>dyn_comp</tt>, and
+<tt>sampling_frequency</tt>.</li>
+<li><tt>stat_comp</tt>: The static mechanical component.</li>
+<li><tt>dyn_comp</tt>: The dynamic mechanical component.</li></ul></li>
+<li><tt>compute_profile()</tt>: Recomputes the static and dynamic load
+profiles. This method is generally automatically triggered when there are
+changes to the object, so there is no need to call it manually.</li>
+<li><tt>plot()</tt>: Generates a figure showing the pin position(s) along with
+indentation profiles over time. The figure is interactive and allows selecting
+individual pins to visualize.</li>
+</ul>
+</p><p><b>Examples</b></p><pre class="codeinput">trace = repmat(1+.5*sin(linspace(0,10,5000)*2*pi*10)',1,2);
+s = Stimulus(trace+0.05*randn(size(trace)),[0 0; 1 1]);
+s.duration
+</pre><pre class="codeoutput">
+ans =
+
+     1
+
+</pre><pre class="codeinput">figure
+plot(s)
+</pre><img vspace="5" hspace="5" src="classes_03.png" alt=""> <h2 id="9">Response</h2><p>Object that represents the response of a single <tt>Afferent</tt> to a <tt>Stimulus</tt>.</p><p><b>Properties</b></p><div><ul><li><tt>afferent</tt>: The <tt>Afferent</tt> object that is responding.</li><li><tt>propagated_struct</tt>: The stimulus as experienced by the afferent, set to the output of <tt>Stimulus.propagate</tt>.</li><li><tt>spikes</tt>: The vector of spike times.</li><li><tt>rate</tt>: Firing rate of the afferent, calculated as the number of spikes divided by the stimulus duration. Can be accessed but not set.</li><li><tt>duration</tt>: Stimulus/response duration. Can be accessed but not set.</li></ul></div><p><b>Methods</b></p><p>
+<ul><li><tt>r = Response(afferent,propagated_struct,spikes)</tt>:
+Constructs a <tt>Response</tt> object with the given parameters. Note that
+<tt>Response</tt> objects are generated by the <tt>Afferent.response</tt> function, so
+there is little need to create them manually.
+<ul><li><tt>afferent</tt>: The <tt>Afferent</tt> object that is responding.</li>
+<li><tt>propagated_struct</tt>: The stimulus as experienced by the afferent,
+returned by <tt>Stimulus.propagate</tt>.</li>
+<li><tt>sampling_frequency</tt>: Vector of spike times in s.</li></ul></li>
+<li><tt>psth = psth(bin_width)</tt>: Returns the PSTH of the afferent's
+response.
+<ul><li><tt>bin_width</tt>: Bin width in ms, default 10.</li></ul></li>
+<li><tt>plot(ax)</tt>: Plots a spike raster of the afferent's response.
+<ul><li><tt>ax</tt>: Figure axis to plot in, default new figure.</li></ul></li>
+</ul>
+</p><p><b>Examples</b></p><pre class="codeinput">a = Afferent(<span class="string">'SA1'</span>,<span class="string">'idx'</span>,1);
+s = stim_ramp();
+r = a.response(s);
+r.spikes
+</pre><pre class="codeoutput">
+ans =
+
+  Columns 1 through 7
+
+    0.0060    0.0126    0.0198    0.0264    0.0334    0.0398    0.0460
+
+  Columns 8 through 14
+
+    0.0526    0.0928    0.1314    0.1730    0.2116    0.2490    0.2910
+
+  Columns 15 through 21
+
+    0.3294    0.3704    0.4162    0.4570    0.4974    0.5294    0.5740
+
+  Columns 22 through 28
+
+    0.6154    0.6548    0.6908    0.7340    0.7760    0.8164    0.8616
+
+  Columns 29 through 30
+
+    0.9064    0.9468
+
+</pre><pre class="codeinput">r.rate
+</pre><pre class="codeoutput">
+ans =
+
+    30
+
+</pre><pre class="codeinput">figure
+plot(r)
+</pre><img vspace="5" hspace="5" src="classes_04.png" alt=""> <h2 id="12">ResponseCollection</h2><p>Object that represents the response of an <tt>AfferentPopulation</tt> to a <tt>Stimulus</tt>.</p><p><b>Properties</b></p><div><ul><li><tt>affpop</tt>: The <tt>AfferentPopulation</tt> object that is responding.</li><li><tt>stimulus</tt>: The <tt>Stimulus</tt> object that the |AfferentPopulation is responding to.</li><li><tt>responses</tt>: Vector of <tt>Response</tt> objects.</li><li><tt>rate</tt>: Vector of firing rates of all afferents. Can be accessed but not set.</li><li><tt>duration</tt>: Stimulus/response duration. Can be accessed but not set.</li></ul></div><p><b>Methods</b></p><p>
+<ul><li><tt>r = ResponseCollection(affpop,responses,stimulus</tt>:
+Constructs a <tt>ResponseCollection</tt> object with the given parameters. Note that
+<tt>ResponseCollection</tt> objects are generated by the <tt>AfferentPopulation.response</tt>
+function, so there is little need to create them manually.
+<ul><li><tt>affpop</tt>: The <tt>AfferentPopulation</tt> object that is responding.</li>
+<li><tt>responses</tt>: Vector of <tt>Response</tt> objects.</li>
+<li><tt>stimulus</tt>: The <tt>Stimulus</tt> object that the afferents are responding to.</li></ul></li>
+<li><tt>psth = psth(bin_width)</tt>: Returns a 2D matrix containing the
+PSTH of each afferent's response.
+<ul><li><tt>bin_width</tt>: Bin width in ms, default 10.</li></ul></li>
+<li><tt>plot(varargin)</tt>: Plots a spike raster of the population response.
+<ul><li><tt>varargin</tt>: Further parameters to be passed to <tt>plot_spikes</tt>.</li></ul></li>
+</ul>
+</p><p><b>Examples</b></p><pre class="codeinput">a = affpop_single_models();
+s = stim_ramp();
+r = a.response(s);
+r.rate
+</pre><pre class="codeoutput">
+ans =
+
+    31
+    23
+    46
+    35
+     7
+     6
+     6
+     4
+     6
+     7
+     5
+     6
+     7
+     3
+     3
+     1
+     3
+
+</pre><pre class="codeinput">figure
+plot(r)
+</pre><img vspace="5" hspace="5" src="classes_05.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% TouchSim classes
+
+%% Afferent
+% Object that represents a single tactile afferent.
+%
+% *Properties*
+%
+% * |class|: Afferent class, needs to be |'SA1'|, |'RA'|, or |'PC'|.
+% * |location|: Location on skin in mm where afferent is terminating,
+% default |[0 0]|. Coordinate system is based on the hand model with the
+% origin centered on the tip of the index finger.
+% * |depth|: Depth of afferent below the skin surface in mm. Default values
+% are chosen based on afferent class. In most cases, these values should
+% not require changing.
+% * |noisy|: Adds noise to membrane potential, if set to true, otherwise
+% model runs purely deterministically; default |true|.
+% * |delay|: If true, sets delay of afferent response to estimated delay at
+% recording site along the nerve, necessary for model fitting but otherwise
+% unnecessaryl default |false|.
+% * |iSA1|: true, if model is an SA1 afferents. Can be accessed, but not
+% set.
+% * |iRA|: true, if model is an RA afferent. Can be accessed, but not
+% set.
+% * |iPC|: true, if model is a PC afferent. Can be accessed, but not
+% set.
+% * |idx|: model ID, defaults to a random value. For example, if set to 1,
+% will select the first model of the respective afferent class. There are 4
+% SA1, 9 RA, and 4 PC models in total.
+% * |parameters|: a vector containing the 13 parameters for the spiking
+% model, is chosen based on afferent class and model ID (|idx|) parameters.
+% In general, this parameter should not be set directly.
+% * |model|: type of spiking model, always set to |'IF'|.
+%
+% *Methods*
+%
+% <html>
+% <ul><li><tt>a = Afferent(class,varargin)</tt>: Constructs a Afferent object.
+% <ul><li><tt>class</tt>: Afferent class, needs to be 'SA1', 'RA', or
+% 'PC'.</li>
+% <li><tt>varargin</tt>: Additional afferent parameters: <tt>location:</tt> 
+% afferent location, default <tt>[0 0]</tt>; <tt>idx</tt>: afferent model, 
+% default chosen randomly from all models of given class; <tt>noisy</tt>: 
+% adds input jitter if true, default true; <tt>delay</tt>: adds neural delay if true,
+% only needed to match fitting data, default false; <tt>parameters</tt>:
+% model parameters, default automatically chosen based on <tt>class</tt>
+% and <tt>idx</tt>.</li></ul></li>
+% <li><tt>r = response(stim,flag_distOnHand)</tt>:Calculate afferent response
+% to given stimulus, returns <tt>Response</tt> object.
+% <ul><li><tt>stim</tt>: Stimulus object.</li>
+% <li><tt>flag_distOnHand</tt>: Determines whether wave propagation is calculated
+% based on geometry of the hand model (if set to true), or based on absolute distance
+% alone, ignoring gaps between fingers (if set to false), default false. Activating 
+% this setting will increase computation time for wave propagation considerably, but
+% this parameter is essential if the responses of afferents all over the hand are
+% considered.</li></ul></li>
+% <li><tt>plot(ax,col,varargin)</tt>: Generates a figure of the hand with the location
+% of the afferent marked.
+% <ul><li><tt>ax</tt>: Figure axis to plot in, generates a new figure by default.</li>
+% <li><tt>col</tt>: Color of marker, default standard afferent color (SA1: green, 
+% RA: blue, PC: orange).</li>
+% <li><tt>varargin</tt>: Additional parameters to be passed to <tt>plot_hand</tt>,
+% as well as <tt>onehand:</tt> plots only a single hand outline if true, default false; 
+% <tt>rate</tt>: adjusts transparency of colored marker based on response rate provided, 
+% default no transparency.</li></ul></li></ul>
+% </html>
+%
+% *Examples*
+
+% generate a random PC model
+a = Afferent('PC');
+a.idx
+
+%%
+
+% pick the first RA model, place at [1 1], and turn off input jitter
+a = Afferent('RA','idx',1,'location',[1 1],'noisy',false);
+a.location
+
+%%
+
+plot(a,[],[],'onehand',true);
+
+%%
+
+% generate simple ramp stimulus and calculate response
+s = stim_ramp([],[],[1 1]);
+r = a.response(s);
+r.spikes
+
+%%
+
+%% AfferentPopulation
+% Object that represents a population of afferents, represented as a vector
+% of Afferent objects.
+%
+% *Properties*
+%
+% * |afferents|: vector containing Afferent objects. Entries can be added
+% and deleted by the user and all other properties will automatically
+% update.
+% * |num|: Number of afferents in the population. Can be accessed, but not
+% set.
+% * |class|: Vector containing afferent class of each afferent.
+% * |location|: Matrix containing location of each afferent.
+% * |depth|: Vector containing depth of each afferent.
+% * |iSA1|: true, if model is an SA1 afferents. Can be accessed, but not
+% set.
+% * |iRA|: true, if model is an RA afferent. Can be accessed, but not
+% set.
+% * |iPC|: true, if model is a PC afferent. Can be accessed, but not
+% set.
+%
+% *Methods*
+%
+% <html>
+% <ul><li><tt>a = AfferentPopulation(afflist)</tt>: Constructs an
+% <tt>AfferentPopulation</tt> object.
+% <ul><li><tt>afflist</tt> (optional): Vector of <tt>Afferent</tt> objects; 
+% empty <tt>AfferentPopulation</tt> will be constructed if not supplied.</li></ul></li>
+% <li><tt>aff_afferents(class,locs,varargin)</tt>:Generates specified
+% Afferent objects and adds them to the AfferentPopulation.
+% <ul><li><tt>class</tt>: Afferent class, needs to be 'SA1', 'RA', or
+% 'PC'.</li>
+% <li><tt>locs</tt>: Matrix containing location of each
+% afferent.</li>
+% <li><tt>varargin</tt>: Additional parameters passed to Afferent constructor, see
+% above for details.</li></ul></li>
+% <li><tt>r = response(stim,flag_distOnHand)</tt>:Calculate afferent population response
+% to given stimulus, returns <tt>ResponseCollection</tt> object.
+% <ul><li><tt>stim</tt>: Stimulus object.</li>
+% <li><tt>flag_distOnHand</tt>: Determines whether wave propagation is calculated
+% based on geometry of the hand model (if set to true), or based on absolute distance
+% alone, ignoring gaps between fingers (if set to false), default false. Activating 
+% this setting will increase computation time for wave propagation considerably, but
+% this parameter is essential if the responses of afferents all over the hand are
+% considered.</li></ul></li>
+% <li><tt>plot(col_vec,varargin)</tt>: Generates a figure of the hand with the location
+% of the afferent marked.
+% <ul><li><tt>col_vec</tt>: Marker colors, default standard afferent colors (SA1: green, 
+% RA: blue, PC: orange).</li>
+% <li><tt>varargin</tt>: Additional parameters to be passed to <tt>plot_hand</tt>,
+% as well as <tt>rate</tt>: adjusts transparency of colored marker based on response rate provided, 
+% default no transparency.</li></ul></li></ul>
+% </html>
+%
+% *Examples*
+
+[x,y] = meshgrid(-5:5,-5:5);
+a = AfferentPopulation();
+a.add_afferents('RA',[x(:) y(:)]);
+plot(a,[],'region','D2')
+
+%% Stimulus
+% Object that represents an arbitrary spatio-temporal tactile stimulus.
+%
+% *Properties*
+%
+% * |trace|: Matrix where each column refers to the indentation trace of a single pin (in
+% mm, positive values indent into the skin), default
+% |1+.5*sin(linspace(0,10,5000)*2*pi*10)'|. Changing the |trace| of a
+% |Stimulus| object automatically triggers recomputation of the |profile|
+% and |profiledyn| properties, which might be slow.
+% * |location|: 2D matrix where each row denotes the position of one
+% stimulus pin, default |[0 0]|. Changing the |location| of a
+% |Stimulus| object automatically triggers recomputation of the |profile|
+% and |profiledyn| properties, which might be slow.
+% * |sampling_frequency|: Sampling frequency of |trace|, default 5000. Can
+% be accessed, but only set through the |resample| and
+% |update_sampling_frequency| methods, see below.
+% * |duration|: Total duration of the stimulus in s, can be accessed but
+% not set.
+% * |pin_radius|: Radius for all pins in the current Stimulus object,
+% default |0.05|. Can be accessed, but not set.
+% * |profile|: Load profile calculated from trace, can be accessed but not
+% set.
+% * |profiledyn|: Dynamic load profile calculated from trace, can be
+% accessed but not set.
+%
+% *Methods*
+%
+% <html>
+% <ul><li><tt>s = Stimulus(trace,location,sampling_frequency,pin_radius)</tt>:
+% Constructs a Stimulus object with the given parameters.
+% % <ul><li><tt>trace</tt>: Indentation trace for each pin, see above.</li>
+% <li><tt>location</tt>: Pin locations, see above.</li>
+% <li><tt>sampling_frequency</tt>: Sampling frequency in Hz.</li>
+% <li><tt>pin_radius</tt>: Pin radius, see above.</li></ul></li>
+% <li><tt>resample(sampling_freq)</tt>: Resample the stimulus trace at the
+% given frequency.
+% <ul><li><tt>sampling_freq</tt>: New sampling frequency.</li></ul></li>
+% <li><tt>update_sampling_frequency(sampling_freq)</tt>: Update sampling
+% frequency, but keep current stimulus trace; this method is useful for
+% quickly changing the speed of a stimulus (e.g. indenting or sliding
+% across the skin) without having to recompute the stimulus profile again.
+% <ul><li><tt>sampling_freq</tt>: New sampling frequency.</li></ul></li>
+% <li><tt>pad(len1,len2)</tt>: Pad the stimulus trace with zeros. This
+% method triggers a recomputation of the stimulus profiles.
+% <ul><li><tt>len1</tt>: Length in s of leading padding. If a single value is given,
+% the same padding is applied to all pins.</li>
+% <li><tt>len2</tt>: Length in s of trailing padding. If a single value is given,
+% the same padding is applied to all pins. If multiple values are given
+% <tt>sum(len1+len2)</tt>
+% needs to result in equal values for all pins. If no value is given and <tt>len1</tt> has one element,
+% both leading and trailing padding will be the same; otherwise, if <tt>len1</tt> consists of multiple
+% values, <tt>len2</tt> values will be chosen such that the trace for each pin will 
+% have equal length.</li></ul></li>
+% <li><tt>[s,stat_comp,dyn_comp] = propagate(aff,flag_distOnHand)</tt>:
+% Propagates the stimulus to the given afferent(s). This method is
+% automatically executed when calling <tt>Afferent.response</tt> or
+% <tt>AfferentPopulation.response</tt> and needs to be called
+% manually only if static or dynamic mechanics components need to be
+% obtained explicitly.
+% <ul><li><tt>aff</tt>: <tt>Afferent</tt> or <tt>AfferentPopulation</tt> objects.</li>
+% <li><tt>flag_distOnHand</tt>: Determines whether wave propagation is calculated
+% based on geometry of the hand model (if set to true), or based on absolute distance
+% alone, ignoring gaps between fingers (if set to false), default false. Activating 
+% this setting will increase computation time for wave propagation considerably, but
+% this parameter is essential if the responses of afferents all over the hand are
+% considered.</li>
+% <li><tt>s</tt>: A Matlab <tt>struct</tt> containing <tt>stat_comp</tt>, <tt>dyn_comp</tt>, and
+% <tt>sampling_frequency</tt>.</li>
+% <li><tt>stat_comp</tt>: The static mechanical component.</li>
+% <li><tt>dyn_comp</tt>: The dynamic mechanical component.</li></ul></li>
+% <li><tt>compute_profile()</tt>: Recomputes the static and dynamic load
+% profiles. This method is generally automatically triggered when there are
+% changes to the object, so there is no need to call it manually.</li>
+% <li><tt>plot()</tt>: Generates a figure showing the pin position(s) along with
+% indentation profiles over time. The figure is interactive and allows selecting
+% individual pins to visualize.</li>
+% </ul>
+% </html>
+%
+% *Examples*
+
+trace = repmat(1+.5*sin(linspace(0,10,5000)*2*pi*10)',1,2);
+s = Stimulus(trace+0.05*randn(size(trace)),[0 0; 1 1]);
+s.duration
+
+%%
+
+figure
+plot(s)
+
+%% Response
+% Object that represents the response of a single |Afferent| to a
+% |Stimulus|.
+%
+% *Properties*
+%
+% * |afferent|: The |Afferent| object that is responding.
+% * |propagated_struct|: The stimulus as experienced by the afferent, set
+% to the output of |Stimulus.propagate|.
+% * |spikes|: The vector of spike times.
+% * |rate|: Firing rate of the afferent, calculated as the number of spikes
+% divided by the stimulus duration. Can be accessed but not set.
+% * |duration|: Stimulus/response duration. Can be accessed but not set.
+%
+% *Methods*
+%
+% <html>
+% <ul><li><tt>r = Response(afferent,propagated_struct,spikes)</tt>:
+% Constructs a <tt>Response</tt> object with the given parameters. Note that
+% <tt>Response</tt> objects are generated by the <tt>Afferent.response</tt> function, so
+% there is little need to create them manually.
+% <ul><li><tt>afferent</tt>: The <tt>Afferent</tt> object that is responding.</li>
+% <li><tt>propagated_struct</tt>: The stimulus as experienced by the afferent,
+% returned by <tt>Stimulus.propagate</tt>.</li>
+% <li><tt>sampling_frequency</tt>: Vector of spike times in s.</li></ul></li>
+% <li><tt>psth = psth(bin_width)</tt>: Returns the PSTH of the afferent's
+% response.
+% <ul><li><tt>bin_width</tt>: Bin width in ms, default 10.</li></ul></li>
+% <li><tt>plot(ax)</tt>: Plots a spike raster of the afferent's response.
+% <ul><li><tt>ax</tt>: Figure axis to plot in, default new figure.</li></ul></li>
+% </ul>
+% </html>
+%
+% *Examples*
+
+a = Afferent('SA1','idx',1);
+s = stim_ramp();
+r = a.response(s);
+r.spikes
+
+%%
+
+r.rate
+
+%%
+
+figure
+plot(r)
+
+
+%% ResponseCollection
+% Object that represents the response of an |AfferentPopulation| to a
+% |Stimulus|.
+%
+% *Properties*
+%
+% * |affpop|: The |AfferentPopulation| object that is responding.
+% * |stimulus|: The |Stimulus| object that the |AfferentPopulation is
+% responding to.
+% * |responses|: Vector of |Response| objects.
+% * |rate|: Vector of firing rates of all afferents. Can be accessed but not set.
+% * |duration|: Stimulus/response duration. Can be accessed but not set.
+%
+% *Methods*
+%
+% <html>
+% <ul><li><tt>r = ResponseCollection(affpop,responses,stimulus</tt>:
+% Constructs a <tt>ResponseCollection</tt> object with the given parameters. Note that
+% <tt>ResponseCollection</tt> objects are generated by the <tt>AfferentPopulation.response</tt>
+% function, so there is little need to create them manually.
+% <ul><li><tt>affpop</tt>: The <tt>AfferentPopulation</tt> object that is responding.</li>
+% <li><tt>responses</tt>: Vector of <tt>Response</tt> objects.</li>
+% <li><tt>stimulus</tt>: The <tt>Stimulus</tt> object that the afferents are responding to.</li></ul></li>
+% <li><tt>psth = psth(bin_width)</tt>: Returns a 2D matrix containing the
+% PSTH of each afferent's response.
+% <ul><li><tt>bin_width</tt>: Bin width in ms, default 10.</li></ul></li>
+% <li><tt>plot(varargin)</tt>: Plots a spike raster of the population response.
+% <ul><li><tt>varargin</tt>: Further parameters to be passed to <tt>plot_spikes</tt>.</li></ul></li>
+% </ul>
+% </html>
+%
+% *Examples*
+
+a = affpop_single_models();
+s = stim_ramp();
+r = a.response(s);
+r.rate
+
+%%
+
+figure
+plot(r)
+
+##### SOURCE END #####
+--></body></html>

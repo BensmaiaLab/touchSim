@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding="utf-8"?>
+<toc version="2.0">
+
+    <tocitem target="touchsim.html">TouchSim
+        <tocitem target="classes.html">Classes
+        </tocitem>
+        <tocitem target="funs.html">Generator functions
+        </tocitem>
+        <tocitem target="util.html">Other functions
+        </tocitem>
+        <tocitem target="gui.html">GUI
+        </tocitem>
+        <tocitem target="examples.html">Examples
+        </tocitem>
+    </tocitem>
+
+</toc>
