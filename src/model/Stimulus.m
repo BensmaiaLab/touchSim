@@ -9,6 +9,7 @@ classdef Stimulus < handle
         pin_radius@double scalar =0.05;                     % pin radius
         profile                                             % equivalent load profile
         profiledyn                                          % dynamic load profile
+        indentprofile
     end
     
     properties (SetAccess = private, Dependent=true)
@@ -104,7 +105,7 @@ classdef Stimulus < handle
         % compute equivalent force profile based on skin deflection
         function compute_profile(obj)
             if(obj.initialized)
-                [obj.profile, obj.profiledyn] = CircIndent2LoadProfile...
+                [obj.profile, obj.profiledyn, obj.indentprofile] = CircIndent2LoadProfile...
                     (single(obj.trace),single(obj.location),...
                     obj.sampling_frequency,obj.pin_radius);
             end

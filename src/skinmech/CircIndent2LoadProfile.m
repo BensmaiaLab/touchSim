@@ -11,7 +11,7 @@
 %
 % Notes: E=50kPa; nu=0.4;
 
-function [P, Pdyn,S1] = CircIndent2LoadProfile(S0,xy,samp_freq,ProbeRad)
+function [P, Pdyn, S1] = CircIndent2LoadProfile(S0,xy,samp_freq,ProbeRad)
 
 s=size(S0);
 
