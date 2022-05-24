@@ -1,10 +1,10 @@
 p = mfilename('fullpath');
 p = fileparts(p);
 
-addpath([p '/base/model'])              % base model code
-addpath([p '/base/internal'])           % internal functions
-addpath([p '/base/GUI'])                % GUI
-addpath([p '/base/skinmech/'])          % Skin mechanics code
+addpath([p '/src/model'])              % base model code
+addpath([p '/src/internal'])           % internal functions
+addpath([p '/src/GUI'])                % GUI
+addpath([p '/src/skinmech/'])          % Skin mechanics code
 addpath([p '/docs'])                    % Toolbox documentation
 
 % optional directories
