@@ -1,13 +1,13 @@
 classdef Afferent < handle
     
     properties
-        class@char vector
-        parameters@double vector
-        location@double vector
-        depth@double scalar
-        idx@int16 scalar
-        noisy@logical scalar
-        model@char vector
+        class char
+        parameters double
+        location double
+        depth double
+        idx int16
+        noisy logical
+        model char
     end
     
     properties (Dependent = true, SetAccess = private)

@@ -3,10 +3,10 @@
 classdef Stimulus < handle
     
     properties(SetAccess = private)
-        trace@double = 1+.5*sin(linspace(0,10,5000)*2*pi*10)';  % indentation matrix (nsamples,npins)
-        location@double = [0 0];                            % 2D coordinates of each pins (npins,2)
-        sampling_frequency@double scalar = 5000;            % sampling frequency of the stimulus
-        pin_radius@double scalar =0.05;                     % pin radius
+        trace double = 1+.5*sin(linspace(0,10,5000)*2*pi*10)';  % indentation matrix (nsamples,npins)
+        location double = [0 0];                            % 2D coordinates of each pins (npins,2)
+        sampling_frequency double = 5000;            % sampling frequency of the stimulus
+        pin_radius double  =0.05;                     % pin radius
         profile                                             % equivalent load profile
         profiledyn                                          % dynamic load profile
         indentprofile
