@@ -1,7 +1,7 @@
 classdef AfferentPopulation < handle
     
     properties
-        afferents@Afferent vector = Afferent.empty;
+        afferents Afferent = Afferent.empty;
     end
     
     properties (Dependent = true)
