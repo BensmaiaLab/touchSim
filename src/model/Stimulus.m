@@ -137,12 +137,11 @@ classdef Stimulus < handle
             stat_comp=stat_comp(:,ic);
             dyn_comp=dyn_comp(:,ic);
             
-            s=struct;
-            for ii=1:size(stat_comp,2)
-                s(ii).sampling_frequency=obj.sampling_frequency;
-                s(ii).stat_comp=stat_comp(:,ii);
-                s(ii).dyn_comp=dyn_comp(:,ii);
-            end
+            num_affs = size(stat_comp, 2);
+            sf_cell = repmat({obj.sampling_frequency}, 1, num_affs);
+            stat_cell = num2cell(stat_comp, 1);
+            dyn_cell = num2cell(dyn_comp, 1);
+            s = struct('sampling_frequency', sf_cell, 'stat_comp', stat_cell, 'dyn_comp', dyn_cell);
         end
         
         % plot stimulus

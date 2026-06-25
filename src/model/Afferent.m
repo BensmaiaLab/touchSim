@@ -121,8 +121,13 @@ classdef Afferent < handle
             end
             
             % resample trace at 5000Hz for the spiking models
-            stat_comp=resample(prop_struct.stat_comp,5000,prop_struct.sampling_frequency);
-            dyn_comp =resample(prop_struct.dyn_comp,5000,prop_struct.sampling_frequency);
+            if prop_struct.sampling_frequency == 5000
+                stat_comp = prop_struct.stat_comp;
+                dyn_comp = prop_struct.dyn_comp;
+            else
+                stat_comp=resample(prop_struct.stat_comp,5000,prop_struct.sampling_frequency);
+                dyn_comp =resample(prop_struct.dyn_comp,5000,prop_struct.sampling_frequency);
+            end
             
             switch obj.model
                 case 'IF'
