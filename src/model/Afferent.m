@@ -20,12 +20,12 @@ classdef Afferent < handle
             p = inputParser;
             addRequired(p,'class');
             addOptional(p,'location',[0 0]);
-            addParamValue(p,'depth', []);
-            addParamValue(p,'parameters',[]);
-            addParamValue(p,'idx',[]);
-            addParamValue(p,'noisy',true);
-            addParamValue(p,'delay',false);
-            addParamValue(p,'model','IF');
+            addParameter(p,'depth', []);
+            addParameter(p,'parameters',[]);
+            addParameter(p,'idx',[]);
+            addParameter(p,'noisy',true);
+            addParameter(p,'delay',false);
+            addParameter(p,'model','IF');
             parse(p,class,varargin{:});
             inputs=p.Results;
             

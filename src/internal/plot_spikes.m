@@ -4,20 +4,20 @@ function plot_spikes(varargin)
 
 p=inputParser;
 p.addRequired('spikestimes'); % cell vector of spike times
-p.addParamValue('neuron_offset',0);   % scalar integer counting neuron offset
-p.addParamValue('neuron_scale',1);   % y axis scaling
-p.addParamValue('time_offset',0);   % time offset of the first spike
-p.addParamValue('time_scale',1);   % time scaling
-p.addParamValue('color',[0 0 0]); % either 1 color for all, or (#neurons,3)
-p.addParamValue('linewidth',1.6);  % bar linewidth
-p.addParamValue('parenthandle',gcf,@ishandle); % fig or axis
-p.addParamValue('psth',0);    % show psth below (0=off, other=binning win duration in sec)
-p.addParamValue('rates','off'); % show mean rate on the right
-p.addParamValue('psd','off');   % show spike train spectrum
-p.addParamValue('hold','off');  % hold previous plots ('on' if offset ~=0)
-p.addParamValue('title','');
-p.addParamValue('spike_num',0);
-p.addParamValue('psth_duration',[]) % time duration of psth trace
+p.addParameter('neuron_offset',0);   % scalar integer counting neuron offset
+p.addParameter('neuron_scale',1);   % y axis scaling
+p.addParameter('time_offset',0);   % time offset of the first spike
+p.addParameter('time_scale',1);   % time scaling
+p.addParameter('color',[0 0 0]); % either 1 color for all, or (#neurons,3)
+p.addParameter('linewidth',1.6);  % bar linewidth
+p.addParameter('parenthandle',gcf,@ishandle); % fig or axis
+p.addParameter('psth',0);    % show psth below (0=off, other=binning win duration in sec)
+p.addParameter('rates','off'); % show mean rate on the right
+p.addParameter('psd','off');   % show spike train spectrum
+p.addParameter('hold','off');  % hold previous plots ('on' if offset ~=0)
+p.addParameter('title','');
+p.addParameter('spike_num',0);
+p.addParameter('psth_duration',[]) % time duration of psth trace
 
 
 parse(p,varargin{:});

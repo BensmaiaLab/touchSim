@@ -31,15 +31,15 @@ else
 end
 
 p = inputParser;
-addParamValue(p,'names', false);  % toggle region names visibility
-addParamValue(p,'scalebar', true);  % toggle scalebar visibility
-addParamValue(p,'axes', false);  % toggle axes visibility
-addParamValue(p,'centers', false); % toggle centers visibility
-addParamValue(p,'afferents', []); % plot afferents on hand
-addParamValue(p,'color', []); % override afferent default colors
-addParamValue(p,'region', []); % select hand region to plot
-addParamValue(p,'rotate', 0); % rotate hand
-addParamValue(p,'fill', 0); % fill hand with color (e.g. [.9 .9 .9])
+addParameter(p,'names', false);  % toggle region names visibility
+addParameter(p,'scalebar', true);  % toggle scalebar visibility
+addParameter(p,'axes', false);  % toggle axes visibility
+addParameter(p,'centers', false); % toggle centers visibility
+addParameter(p,'afferents', []); % plot afferents on hand
+addParameter(p,'color', []); % override afferent default colors
+addParameter(p,'region', []); % select hand region to plot
+addParameter(p,'rotate', 0); % rotate hand
+addParameter(p,'fill', 0); % fill hand with color (e.g. [.9 .9 .9])
 
 p.parse(varargin{:})
 names_flag=p.Results.names;

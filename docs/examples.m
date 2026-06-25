@@ -30,6 +30,7 @@ r = a.response(s);
 
 % Show response
 r.rate
+plot(r)
 
 %%
 % For commonly used stimuli, such as ramp-and-hold stimuli and sinusoidal
