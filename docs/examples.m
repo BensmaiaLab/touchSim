@@ -42,84 +42,7 @@ s = stim_sine(80,.15);
 plot(s)
 
 
-%% Test expanded skin mech
-% Sine wave
-sf = 5000; 
-rad = 0.1;
-t = (1/sf:1/sf:1)'; 
-sine_wave = sin(2*pi*80*t);
-num_pins = 51;
-
-% Pin coordinates
-[x, y] = deal(linspace(-1,1,num_pins));
-[X,Y] = meshgrid(x,y); 
-loc = [X(:), Y(:)];
-
-% Create stimulus trace
-trace = zeros(length(t), size(loc,1));
-idx = all(loc == 0, 2);
-trace(:, idx) = sine_wave;
-% trace(:, 50) = sine_wave;
-% trace(:, 1000) = sine_wave;
-
-
-% Create stimulus
-s = Stimulus(trace,loc,sf,rad); 
-
-%% Try plotting
-z = s.indentprofile';
-z = reshape(z, [num_pins,num_pins,length(t)]);
-
-p = s.trace';
-p = reshape(p, [num_pins,num_pins,length(t)]);
-
-zlims = [min(z,[], 'all'), max(z,[],'all') + 1];
-xlim = [min(s.location(:,1)), max(s.location(:,1))];
-ylim = [min(s.location(:,2)), max(s.location(:,2))];
-
-num_pins = sqrt(size(s.location, 1));
-xloc = reshape(s.location(:,1), num_pins, num_pins);
-yloc = reshape(s.location(:,2), num_pins, num_pins);
-
-% Create pin mesh
-[pX,pY,pZ] = cylinder(s.pin_radius * 0.9);
-
-clf; shg
-for i = 1:100
-    cla(); hold on
-
-    % Plot all of the pins
-    pt = p(:,:,i);
-    [px, py] = find(pt ~= 0);
-    for j = 1:length(pidx)
-        surf(pX + xloc(px,py), ...
-             pY + yloc(px,py), ...
-             pZ + pt(px,py) + 0.01, ...
-             'FaceColor', [.6 .6 .6])
-        fill3(pX(1,:) + xloc(px,py), ...
-              pY(1,:) + yloc(px,py), ...
-              pZ(1,:) + pt(px,py) + 0.01, [.6 .6 .6]);
-        % scatter3(xloc(px,py), yloc(px,py), pt(px,py) + 0.01, 50)
-    end
-
-
-    % Plot the skin mesh
-    surf(x,y,squeeze(z(:,:,i)))
-    clim(zlims)
-
-    % Format
-    set(gca, 'ZLim', zlims, ...
-             'XLim', xlim, ...
-             'YLim', ylim, ...
-             'View', [-25 25])
-    pause(0.01)
-end
-
-
-
-%%
-
-% Move stimulus 5 mm away and calculate response.
+%% Move stimulus 5 mm away and calculate response.
 s = stim_sine(80,.15,[],[],[5 0]);
 
 r2 = a.response(s);
@@ -161,3 +84,62 @@ rates(a.iSA1)=rates(a.iSA1)/max(rates(a.iSA1));
 rates(a.iRA)=rates(a.iRA)/max(rates(a.iRA));
 rates(a.iPC)=rates(a.iPC)/max(rates(a.iPC));
 plot(a,[],'rate',rates)
+
+
+%% Skin mechanics plotting - single pin
+% Sine wave
+sf = 5000; 
+rad = 0.1;
+t = (1/sf:1/sf:1)'; 
+sine_wave = sin(2*pi*80*t) * 0.5;
+
+% Pin coordinates (square pin layout for each point to be queried)
+% [x, y] = deal(linspace(-1,1,num_pins));
+[x, y] = deal(-1:rad:1);
+num_pins = length(x);
+[X,Y] = meshgrid(x,y); 
+loc = [X(:), Y(:)];
+
+% Create stimulus trace (only assign trace to subset of pins)
+trace = zeros(length(t), size(loc,1));
+idx = all(loc == 0, 2);
+trace(:, idx) = sine_wave;
+
+
+
+% Create stimulus
+s = Stimulus(trace,loc,sf,rad); 
+plot_skin(s, "show_pins", true, 'max_timepoints', 100)
+
+
+%% Skin mechanics plotting - Traveling wave
+rad = 0.05;
+[x, y] = deal(-1:rad:1);
+num_pins = length(x);
+[X,Y] = meshgrid(x,y); 
+loc = [X(:), Y(:)];
+
+% Sine wave
+sf = 5000; 
+t = (1/sf:1/sf:1)'; 
+sine_wave = sin(2*pi*80*t) * 0.1;
+trace = zeros(length(t), size(loc,1));
+% Shift sine wave over x-axis
+for xi = 1:length(x)
+    idx = loc(:,1) == x(xi);
+    trace(:,idx) = repmat(sine_wave, 1, sum(idx));
+    sine_wave = circshift(sine_wave, 5);
+end
+
+% Sparsen
+for xi = 1:2:length(x)
+    idx = loc(:,1) == x(xi);
+    trace(:,idx) = 0;
+end
+for yi = 1:2:length(y)
+    idx = loc(:,2) == y(yi);
+    trace(:,idx) = 0;
+end
+
+s = Stimulus(trace,loc,sf,rad); 
+plot_skin(s, "show_pins", true, 'max_timepoints', 250)

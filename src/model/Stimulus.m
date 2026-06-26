@@ -287,6 +287,72 @@ classdef Stimulus < handle
                 ylabel(axloc(3),'Dyn comp [-]')
             end
         end
-        
+
+        function plot_skin(obj, opts) % Assumes square pin matrix
+            arguments
+                obj % Self
+                opts.show_pins {mustBeNumericOrLogical} = true;
+                opts.max_timepoints {mustBeNumeric} = Inf
+            end
+            % Convert properties to 2D matrices for convenience
+            num_pins = sqrt(size(obj.location, 1));
+            
+            % Convert the skin profile and pin traces to [x,y,z] for plotting
+            z = obj.indentprofile';
+            z = reshape(z, [num_pins, num_pins, size(obj.trace,1)]);
+
+            % Get limits 
+            zlims = [min(z,[], 'all')-0.1, max(z,[],'all') + 1];
+            xlim = [min(obj.location(:,1)), max(obj.location(:,1))];
+            ylim = [min(obj.location(:,2)), max(obj.location(:,2))];
+
+            % Create pin mesh
+            [pX,pY,pZ] = cylinder(obj.pin_radius * 0.9);
+
+            % Create plot objects
+            clf; shg; hold on
+            xloc = reshape(obj.location(:,1), num_pins, num_pins);
+            yloc = reshape(obj.location(:,2), num_pins, num_pins);
+            skin_mesh = surf(xloc, yloc, squeeze(z(:,:,1)));
+            if opts.show_pins
+                [pins, caps] = deal({});
+                pin_idx = find(~all(obj.trace == 0, 1));
+                num_active_pins = length(pin_idx);
+                for i = 1:num_active_pins
+                    pins{i} = surf(pX + obj.location(pin_idx(i), 1), ...
+                                   pY + obj.location(pin_idx(i), 2), ...
+                                   pZ + obj.trace(1, pin_idx(i)) + 0.01, ...
+                                   'FaceColor', [.6 .6 .6]);
+                    caps{i} = fill3(pX(1,:) + obj.location(pin_idx(i), 1), ...
+                                    pY(1,:) + obj.location(pin_idx(i), 2), ...
+                                    pZ(1,:) + obj.trace(1, pin_idx(i)) + 0.01, ...
+                                    [.6 .6 .6], 'FaceAlpha', 1);
+                end
+            end
+
+            % Format
+            set(gca, 'ZLim', zlims, ...
+                'XLim', xlim, ...
+                'YLim', ylim, ...
+                'View', [-25 25])
+            
+
+            % Update time step
+            for i = 2:min([size(obj.trace,1), opts.max_timepoints])
+                % Surf the skin mesh
+                skin_mesh.ZData = squeeze(z(:,:,i));
+                clim(zlims) % Assert color limits
+
+                % Update pins
+                if opts.show_pins
+                    for j = 1:num_active_pins
+                        pins{j}.ZData = pZ + obj.trace(i, pin_idx(j)) + 0.01;
+                        caps{j}.ZData = pZ(1,:) + obj.trace(i, pin_idx(j)) + 0.01;
+                    end
+                end
+                % Pause for animation
+                pause(0.01)
+            end
+        end
     end
 end

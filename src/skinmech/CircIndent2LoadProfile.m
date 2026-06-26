@@ -11,45 +11,54 @@
 %
 % Notes: E=50kPa; nu=0.4;
 
-function [P, Pdyn, S1] = CircIndent2LoadProfile(S0,xy,samp_freq,ProbeRad)
+function [P, Pdyn, S1] = CircIndent2LoadProfile(indentation_matrix, pin_coords, samp_freq, probe_radius, opts)
+arguments
+    indentation_matrix
+    pin_coords
+    samp_freq
+    probe_radius
+    opts.verbose = true;
+end
 
-s=size(S0);
+if opts.verbose; disp('Initalizing CircIndent2LoadProfile'); end
 
-if(s(2)~=size(xy,1))
-    disp(['Trace size : ' num2str(size(S0))])
-    disp(['Pin number : ' num2str(size(xy,1))])
+s=size(indentation_matrix);
+if(s(2)~=size(pin_coords,1))
+    disp(['Trace size : ' num2str(size(indentation_matrix))])
+    disp(['Pin number : ' num2str(size(pin_coords,1))])
     error('incoherent number of pins ');
 end
 
 E=0.050000; % 50kPa = 50,000 N/m^2 = 0.05 N/mm^2;
 nu=0.4;
 
-x=xy(:,1);
-y=xy(:,2);
+x=pin_coords(:,1);
+y=pin_coords(:,2);
 % distance matrix
 R=sqrt((bsxfun(@minus,x,x')).^2 + (bsxfun(@minus,y,y')).^2);
 
 % flat cylinder indenter solution from (SNEDDON 1946)
-D = (1-nu^2)/pi/ProbeRad*asin(ProbeRad./R)/E;
-D(R<=ProbeRad)=(1-nu^2)/2/ProbeRad/E;
+D = (1-nu^2)/pi/probe_radius*asin(probe_radius./R)/E;
+D(R<=probe_radius)=(1-nu^2)/2/probe_radius/E;
 
 % hack to specify stretch (for glued probe)
 % DOES NOT WORK IF A STIMULUS HAS POSITIVE AND NEGATIVE VALUES IN S0
 % NON CONTACTING PINS SHOULD BE SET TO 0
 % I.E. YOU CAN ONLY SPECIFY SKIN STRESHING/PULLING (S0<0) FOR FLAT SURFACE
 % INDENTATIONS
-if(any(S0<0))
+if(any(indentation_matrix<0))
     warning('Negative indentation found: proceed with caution !')
 end
 
-S0neg=S0<0;
-absS0=abs(S0);
+S0neg=indentation_matrix<0;
+absS0=abs(indentation_matrix);
 
 P = zeros(s); prevS0=zeros(s); count=0;
 % iterative contact-detection algorithm
 while(count==0||~isempty(find(P<0,1)))
     absS0(P<0) = 0;
     count=count+1;
+    if opts.verbose; fprintf('CircIndent2LoadProfile: contact detection %d of ?\n', count); end
     % only work on changed (and nonzeros) line
     diffl=sum(absS0-prevS0,2)~=0;
     S0loc=absS0(diffl,:);
@@ -68,14 +77,15 @@ end
 % time derivative of deflection profile
 % assumes same distritubution of pressure as in static case
 % proposed by BYCROFT (1955) and confirmed by SCHMIDT (1981)
-opts.SYM = true; opts.POSDEF=false;
+if opts.verbose; disp('CircIndent2LoadProfile: dynamic profile'); end
+ls_opts.SYM = true; ls_opts.POSDEF=false;
 if(nargout>1)
     if(s(1)>1)
         % compute time derivative
         S1p=([S1(2:end,:); nan(1,size(S1,2))] - [nan(1,size(S1,2)) ; S1(1:end-1,:)])/2*samp_freq;
         S1p(1,:)=S1p(2,:); S1p(end,:)=S1p(end-1,:);
         % linsolve
-        Pdyn=linsolve(D,S1p',opts)'/1;
+        Pdyn=linsolve(D,S1p',ls_opts)'/1;
     else
         Pdyn=zeros(size(P));
     end
@@ -93,7 +103,7 @@ nz=S0~=0; % non zeros elements
 B=bwpack(nz')';
 [~,ia,ic]=unique(B,'rows'); % unique is much faster after bwpack (I guess booleans are uint32 or so)
 unz=nz(ia,:); % unique non-zeros elements
-opts.SYM = true; opts.POSDEF=true;
+opts.SYM = true; opts.POSDEF=false;
 P=zeros(size(S0));
 
 for ii=1:length(ia)
