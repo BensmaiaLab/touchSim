@@ -68,7 +68,7 @@ end
 % time derivative of deflection profile
 % assumes same distritubution of pressure as in static case
 % proposed by BYCROFT (1955) and confirmed by SCHMIDT (1981)
-opts.SYM = true; opts.POSDEF=true;
+opts.SYM = true; opts.POSDEF=false;
 if(nargout>1)
     if(s(1)>1)
         % compute time derivative
