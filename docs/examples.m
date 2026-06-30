@@ -96,15 +96,15 @@ sine_wave = sin(2*pi*80*t) * 0.5;
 % Pin coordinates (square pin layout for each point to be queried)
 % [x, y] = deal(linspace(-1,1,num_pins));
 [x, y] = deal(-1:rad:1);
-num_pins = length(x);
 [X,Y] = meshgrid(x,y); 
 loc = [X(:), Y(:)];
 
 % Create stimulus trace (only assign trace to subset of pins)
 trace = zeros(length(t), size(loc,1));
-idx = all(loc == 0, 2);
-trace(:, idx) = sine_wave;
-
+% idx = all(loc == 0, 2);
+% trace(:, idx) = sine_wave;
+trace(:, 200) = sine_wave;
+trace(:, 250) = sine_wave;
 
 
 % Create stimulus
@@ -142,4 +142,4 @@ for yi = 1:2:length(y)
 end
 
 s = Stimulus(trace,loc,sf,rad); 
-plot_skin(s, "show_pins", true, 'max_timepoints', 250)
+plot_skin(s, "show_pins", true, 'filepath', "C:\Users\somlab\Downloads\touchsim_test2.mp4", 'max_timepoints', 250)

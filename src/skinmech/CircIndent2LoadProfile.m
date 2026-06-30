@@ -17,7 +17,7 @@ arguments
     pin_coords
     samp_freq
     probe_radius
-    opts.verbose = true;
+    opts.verbose = false;
 end
 
 if opts.verbose; disp('Initalizing CircIndent2LoadProfile'); end

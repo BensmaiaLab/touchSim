@@ -293,6 +293,7 @@ classdef Stimulus < handle
                 obj % Self
                 opts.show_pins {mustBeNumericOrLogical} = true;
                 opts.max_timepoints {mustBeNumeric} = Inf
+                opts.filepath {mustBeText} = '';
             end
             % Convert properties to 2D matrices for convenience
             num_pins = sqrt(size(obj.location, 1));
@@ -335,6 +336,13 @@ classdef Stimulus < handle
                 'XLim', xlim, ...
                 'YLim', ylim, ...
                 'View', [-25 25])
+
+            % Initalize video if requested
+            if ~isempty(opts.filepath)
+                v = VideoWriter(opts.filepath,'MPEG-4');
+                v.FrameRate = 60;
+                open(v)
+            end
             
 
             % Update time step
@@ -350,8 +358,19 @@ classdef Stimulus < handle
                         caps{j}.ZData = pZ(1,:) + obj.trace(i, pin_idx(j)) + 0.01;
                     end
                 end
-                % Pause for animation
-                pause(0.01)
+
+                if isempty(opts.filepath)
+                    % Pause for animation
+                    pause(0.01)
+                else
+                    frame = getframe(gcf);
+                    writeVideo(v, frame);
+                end
+            end
+
+            % Close video
+            if ~isempty(opts.filepath)
+                close(v)
             end
         end
     end
