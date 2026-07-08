@@ -97,6 +97,7 @@ if(nargout>1)
     if(s(1)>1)
         if opts.robust_dynamic_solve
             % Use linsolve to compute time derivative
+            ls_opts.SYM = true; ls_opts.POSDEF=false;
             S1p=([S1(2:end,:); nan(1,size(S1,2))] - [nan(1,size(S1,2)) ; S1(1:end-1,:)])/2*samp_freq;
             S1p(1,:)=S1p(2,:); S1p(end,:)=S1p(end-1,:);
             Pdyn=linsolve(D,S1p',ls_opts)'/1;
