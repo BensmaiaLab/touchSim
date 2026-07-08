@@ -34,12 +34,24 @@ nu=0.4;
 
 x=pin_coords(:,1);
 y=pin_coords(:,2);
-% distance matrix
-R=sqrt((bsxfun(@minus,x,x')).^2 + (bsxfun(@minus,y,y')).^2);
 
 % flat cylinder indenter solution from (SNEDDON 1946)
-D = (1-nu^2)/pi/probe_radius*asin(probe_radius./R)/E;
-D(R<=probe_radius)=(1-nu^2)/2/probe_radius/E;
+chunk_size = 10000; % Allow batched computation for large N (avoids memory issues but is slightly slower)
+N = length(x);
+c1 = (1-nu^2)/pi/probe_radius/E;
+
+if N <= chunk_size
+    R = sqrt(bsxfun(@minus, x, x').^2 + bsxfun(@minus, y, y').^2);
+    D = c1 * asin(probe_radius ./ max(R, probe_radius));
+else
+    % Process in chunks to prevent out-of-memory errors
+    D = zeros(N, N, class(x));
+    for i = 1:chunk_size:N
+        idx = i:min(i+chunk_size-1, N);
+        R_chunk = sqrt(bsxfun(@minus, x(idx), x').^2 + bsxfun(@minus, y(idx), y').^2);
+        D(idx, :) = c1 * asin(probe_radius ./ max(R_chunk, probe_radius));
+    end
+end
 
 % hack to specify stretch (for glued probe)
 % DOES NOT WORK IF A STIMULUS HAS POSITIVE AND NEGATIVE VALUES IN S0
