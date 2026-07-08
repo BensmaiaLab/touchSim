@@ -17,7 +17,9 @@ arguments
     pin_coords
     samp_freq
     probe_radius
-    opts.verbose = false;
+    opts.verbose = true;
+    opts.chunk_size = 10000; % Reduce this number if line 52 throws an error
+    opts.robust_dynamic_solve = true;
 end
 
 if opts.verbose; disp('Initalizing CircIndent2LoadProfile'); end
@@ -34,20 +36,21 @@ nu=0.4;
 
 x=pin_coords(:,1);
 y=pin_coords(:,2);
+N = length(x);
+
 
 % flat cylinder indenter solution from (SNEDDON 1946)
-chunk_size = 10000; % Allow batched computation for large N (avoids memory issues but is slightly slower)
-N = length(x);
 c1 = (1-nu^2)/pi/probe_radius/E;
 
-if N <= chunk_size
+if N <= opts.chunk_size
     R = sqrt(bsxfun(@minus, x, x').^2 + bsxfun(@minus, y, y').^2);
     D = c1 * asin(probe_radius ./ max(R, probe_radius));
 else
     % Process in chunks to prevent out-of-memory errors
     D = zeros(N, N, class(x));
-    for i = 1:chunk_size:N
-        idx = i:min(i+chunk_size-1, N);
+    for i = 1:opts.chunk_size:N
+        if opts.verbose; fprintf('CircIndent2LoadProfile: distance matrix %d of %d\n', i, N); end
+        idx = i:min(i+opts.chunk_size-1, N);
         R_chunk = sqrt(bsxfun(@minus, x(idx), x').^2 + bsxfun(@minus, y(idx), y').^2);
         D(idx, :) = c1 * asin(probe_radius ./ max(R_chunk, probe_radius));
     end
@@ -82,7 +85,7 @@ end
 P(S0neg)=-P(S0neg);
 
 % actual skin profile under the pins
-if(nargout>1)
+if(nargout>2)
     S1=P*D;
 end
 
@@ -90,14 +93,18 @@ end
 % assumes same distritubution of pressure as in static case
 % proposed by BYCROFT (1955) and confirmed by SCHMIDT (1981)
 if opts.verbose; disp('CircIndent2LoadProfile: dynamic profile'); end
-ls_opts.SYM = true; ls_opts.POSDEF=false;
 if(nargout>1)
     if(s(1)>1)
-        % compute time derivative
-        S1p=([S1(2:end,:); nan(1,size(S1,2))] - [nan(1,size(S1,2)) ; S1(1:end-1,:)])/2*samp_freq;
-        S1p(1,:)=S1p(2,:); S1p(end,:)=S1p(end-1,:);
-        % linsolve
-        Pdyn=linsolve(D,S1p',ls_opts)'/1;
+        if opts.robust_dynamic_solve
+            % Use linsolve to compute time derivative
+            S1p=([S1(2:end,:); nan(1,size(S1,2))] - [nan(1,size(S1,2)) ; S1(1:end-1,:)])/2*samp_freq;
+            S1p(1,:)=S1p(2,:); S1p(end,:)=S1p(end-1,:);
+            Pdyn=linsolve(D,S1p',ls_opts)'/1;
+        else
+            % Compute time derivative of load profile P directly
+            Pdyn=([P(2:end,:); nan(1,size(P,2))] - [nan(1,size(P,2)) ; P(1:end-1,:)])/2*samp_freq;
+            Pdyn(1,:)=Pdyn(2,:); Pdyn(end,:)=Pdyn(end-1,:);
+        end
     else
         Pdyn=zeros(size(P));
     end
