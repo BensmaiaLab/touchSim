@@ -1,8 +1,8 @@
 classdef Response < handle
     
     properties
-        spikes@double vector
-        afferent@Afferent scalar
+        spikes double 
+        afferent Afferent 
         propagated_struct
     end
     
