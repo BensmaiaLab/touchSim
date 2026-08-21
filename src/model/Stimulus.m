@@ -7,6 +7,7 @@ classdef Stimulus < handle
         location double = [0 0];                            % 2D coordinates of each pins (npins,2)
         sampling_frequency (1,1) double = 5000;            % sampling frequency of the stimulus
         pin_radius (1,1) double = 0.05;                     % pin radius
+        robust_solve logical = true;                        % Which dynamic solver to use
         profile                                             % equivalent load profile
         profiledyn                                          % dynamic load profile
         indentprofile
@@ -23,7 +24,10 @@ classdef Stimulus < handle
     methods
         
         % constructor
-        function obj = Stimulus(trace,location,sampling_frequency,pin_radius)
+        function obj = Stimulus(trace,location,sampling_frequency,pin_radius,robust_solve)
+            if nargin>4
+                obj.robust_solve=robust_solve;
+            end
             if nargin>3
                 obj.pin_radius=pin_radius;
             end
@@ -107,7 +111,7 @@ classdef Stimulus < handle
             if(obj.initialized)
                 [obj.profile, obj.profiledyn, obj.indentprofile] = CircIndent2LoadProfile...
                     (single(obj.trace),single(obj.location),...
-                    obj.sampling_frequency,obj.pin_radius);
+                    obj.sampling_frequency,obj.pin_radius, 'robust_dynamic_solve', obj.robust_solve);
             end
         end
         

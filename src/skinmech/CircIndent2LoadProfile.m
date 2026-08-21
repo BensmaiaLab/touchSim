@@ -19,7 +19,7 @@ arguments
     probe_radius
     opts.verbose = true;
     opts.chunk_size = 10000; % Reduce this number if line 52 throws an error
-    opts.robust_dynamic_solve = true;
+    opts.robust_dynamic_solve = false;
 end
 
 if opts.verbose; disp('Initalizing CircIndent2LoadProfile'); end
@@ -59,7 +59,7 @@ end
 % hack to specify stretch (for glued probe)
 % DOES NOT WORK IF A STIMULUS HAS POSITIVE AND NEGATIVE VALUES IN S0
 % NON CONTACTING PINS SHOULD BE SET TO 0
-% I.E. YOU CAN ONLY SPECIFY SKIN STRESHING/PULLING (S0<0) FOR FLAT SURFACE
+% I.E. YOU CAN ONLY SPECIFY SKIN STRETCHING/PULLING (S0<0) FOR FLAT SURFACE
 % INDENTATIONS
 if(any(indentation_matrix<0))
     warning('Negative indentation found: proceed with caution !')
@@ -118,17 +118,19 @@ end
 % in S0 across time) and solves the equation for each block (instead
 % of each line).
 function P=blockSolve(S0,D)
-nz=S0~=0; % non zeros elements
-% find similar lines to solve the linear system
-B=bwpack(nz')';
-[~,ia,ic]=unique(B,'rows'); % unique is much faster after bwpack (I guess booleans are uint32 or so)
-unz=nz(ia,:); % unique non-zeros elements
+% find pins with similar time-courses to solve the linear system
+S0t = S0';
+[uS0,ia,ic]=unique(S0t,'rows'); % unique is much faster after bwpack (I guess booleans are uint32 or so)
 opts.SYM = true; opts.POSDEF=false;
 P=zeros(size(S0));
 
 for ii=1:length(ia)
+    % Skip 0 traces
+    if all(uS0(ii,:) == 0)
+        continue
+    end
+    % Compute linsolve of block
     lines=(ic==ii);    % lines of this block
-    nzi=unz(ii,:);     % non-zeros elements
-    P(lines,nzi) = linsolve(D(nzi,nzi),S0(lines,nzi)',opts)';
+    P(:,lines) = linsolve(D(lines,lines), S0t(lines,:), opts)';
 end
 end
