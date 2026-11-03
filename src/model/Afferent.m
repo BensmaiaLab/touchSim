@@ -1,13 +1,13 @@
 classdef Afferent < handle
     
     properties
-        class@char vector
-        parameters@double vector
-        location@double vector
-        depth@double scalar
-        idx@int16 scalar
-        noisy@logical scalar
-        model@char vector
+        class (1,:) char
+        parameters (1,:) double
+        location (1,:) double
+        depth double {mustBeScalarOrEmpty}
+        idx int16 {mustBeScalarOrEmpty}
+        noisy logical {mustBeScalarOrEmpty}
+        model (1,:) char
     end
     
     properties (Dependent = true, SetAccess = private)
@@ -20,12 +20,12 @@ classdef Afferent < handle
             p = inputParser;
             addRequired(p,'class');
             addOptional(p,'location',[0 0]);
-            addParamValue(p,'depth', []);
-            addParamValue(p,'parameters',[]);
-            addParamValue(p,'idx',[]);
-            addParamValue(p,'noisy',true);
-            addParamValue(p,'delay',false);
-            addParamValue(p,'model','IF');
+            addParameter(p,'depth', []);
+            addParameter(p,'parameters',[]);
+            addParameter(p,'idx',[]);
+            addParameter(p,'noisy',true);
+            addParameter(p,'delay',false);
+            addParameter(p,'model','IF');
             parse(p,class,varargin{:});
             inputs=p.Results;
             
@@ -121,8 +121,13 @@ classdef Afferent < handle
             end
             
             % resample trace at 5000Hz for the spiking models
-            stat_comp=resample(prop_struct.stat_comp,5000,prop_struct.sampling_frequency);
-            dyn_comp =resample(prop_struct.dyn_comp,5000,prop_struct.sampling_frequency);
+            if prop_struct.sampling_frequency == 5000
+                stat_comp = prop_struct.stat_comp;
+                dyn_comp = prop_struct.dyn_comp;
+            else
+                stat_comp=resample(prop_struct.stat_comp,5000,prop_struct.sampling_frequency);
+                dyn_comp =resample(prop_struct.dyn_comp,5000,prop_struct.sampling_frequency);
+            end
             
             switch obj.model
                 case 'IF'

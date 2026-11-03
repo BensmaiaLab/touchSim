@@ -11,45 +11,69 @@
 %
 % Notes: E=50kPa; nu=0.4;
 
-function [P, Pdyn, S1] = CircIndent2LoadProfile(S0,xy,samp_freq,ProbeRad)
+function [P, Pdyn, S1] = CircIndent2LoadProfile(indentation_matrix, pin_coords, samp_freq, probe_radius, opts)
+arguments
+    indentation_matrix
+    pin_coords
+    samp_freq
+    probe_radius
+    opts.verbose = true;
+    opts.chunk_size = 10000; % Reduce this number if line 52 throws an error
+    opts.robust_dynamic_solve = false;
+end
 
-s=size(S0);
+if opts.verbose; disp('Initalizing CircIndent2LoadProfile'); end
 
-if(s(2)~=size(xy,1))
-    disp(['Trace size : ' num2str(size(S0))])
-    disp(['Pin number : ' num2str(size(xy,1))])
+s=size(indentation_matrix);
+if(s(2)~=size(pin_coords,1))
+    disp(['Trace size : ' num2str(size(indentation_matrix))])
+    disp(['Pin number : ' num2str(size(pin_coords,1))])
     error('incoherent number of pins ');
 end
 
 E=0.050000; % 50kPa = 50,000 N/m^2 = 0.05 N/mm^2;
 nu=0.4;
 
-x=xy(:,1);
-y=xy(:,2);
-% distance matrix
-R=sqrt((bsxfun(@minus,x,x')).^2 + (bsxfun(@minus,y,y')).^2);
+x=pin_coords(:,1);
+y=pin_coords(:,2);
+N = length(x);
+
 
 % flat cylinder indenter solution from (SNEDDON 1946)
-D = (1-nu^2)/pi/ProbeRad*asin(ProbeRad./R)/E;
-D(R<=ProbeRad)=(1-nu^2)/2/ProbeRad/E;
+c1 = (1-nu^2)/pi/probe_radius/E;
+
+if N <= opts.chunk_size
+    R = sqrt(bsxfun(@minus, x, x').^2 + bsxfun(@minus, y, y').^2);
+    D = c1 * asin(probe_radius ./ max(R, probe_radius));
+else
+    % Process in chunks to prevent out-of-memory errors
+    D = zeros(N, N, class(x));
+    for i = 1:opts.chunk_size:N
+        if opts.verbose; fprintf('CircIndent2LoadProfile: distance matrix %d of %d\n', i, N); end
+        idx = i:min(i+opts.chunk_size-1, N);
+        R_chunk = sqrt(bsxfun(@minus, x(idx), x').^2 + bsxfun(@minus, y(idx), y').^2);
+        D(idx, :) = c1 * asin(probe_radius ./ max(R_chunk, probe_radius));
+    end
+end
 
 % hack to specify stretch (for glued probe)
 % DOES NOT WORK IF A STIMULUS HAS POSITIVE AND NEGATIVE VALUES IN S0
 % NON CONTACTING PINS SHOULD BE SET TO 0
-% I.E. YOU CAN ONLY SPECIFY SKIN STRESHING/PULLING (S0<0) FOR FLAT SURFACE
+% I.E. YOU CAN ONLY SPECIFY SKIN STRETCHING/PULLING (S0<0) FOR FLAT SURFACE
 % INDENTATIONS
-if(any(S0<0))
+if(any(indentation_matrix<0))
     warning('Negative indentation found: proceed with caution !')
 end
 
-S0neg=S0<0;
-absS0=abs(S0);
+S0neg=indentation_matrix<0;
+absS0=abs(indentation_matrix);
 
 P = zeros(s); prevS0=zeros(s); count=0;
 % iterative contact-detection algorithm
 while(count==0||~isempty(find(P<0,1)))
     absS0(P<0) = 0;
     count=count+1;
+    if opts.verbose; fprintf('CircIndent2LoadProfile: contact detection %d of ?\n', count); end
     % only work on changed (and nonzeros) line
     diffl=sum(absS0-prevS0,2)~=0;
     S0loc=absS0(diffl,:);
@@ -61,21 +85,27 @@ end
 P(S0neg)=-P(S0neg);
 
 % actual skin profile under the pins
-if(nargout>1)
+if(nargout>2)
     S1=P*D;
 end
 
 % time derivative of deflection profile
 % assumes same distritubution of pressure as in static case
 % proposed by BYCROFT (1955) and confirmed by SCHMIDT (1981)
-opts.SYM = true; opts.POSDEF=true;
+if opts.verbose; disp('CircIndent2LoadProfile: dynamic profile'); end
 if(nargout>1)
     if(s(1)>1)
-        % compute time derivative
-        S1p=([S1(2:end,:); nan(1,size(S1,2))] - [nan(1,size(S1,2)) ; S1(1:end-1,:)])/2*samp_freq;
-        S1p(1,:)=S1p(2,:); S1p(end,:)=S1p(end-1,:);
-        % linsolve
-        Pdyn=linsolve(D,S1p',opts)'/1;
+        if opts.robust_dynamic_solve
+            % Use linsolve to compute time derivative
+            ls_opts.SYM = true; ls_opts.POSDEF=false;
+            S1p=([S1(2:end,:); nan(1,size(S1,2))] - [nan(1,size(S1,2)) ; S1(1:end-1,:)])/2*samp_freq;
+            S1p(1,:)=S1p(2,:); S1p(end,:)=S1p(end-1,:);
+            Pdyn=linsolve(D,S1p',ls_opts)'/1;
+        else
+            % Compute time derivative of load profile P directly
+            Pdyn=([P(2:end,:); nan(1,size(P,2))] - [nan(1,size(P,2)) ; P(1:end-1,:)])/2*samp_freq;
+            Pdyn(1,:)=Pdyn(2,:); Pdyn(end,:)=Pdyn(end-1,:);
+        end
     else
         Pdyn=zeros(size(P));
     end
@@ -88,17 +118,19 @@ end
 % in S0 across time) and solves the equation for each block (instead
 % of each line).
 function P=blockSolve(S0,D)
-nz=S0~=0; % non zeros elements
-% find similar lines to solve the linear system
-B=bwpack(nz')';
-[~,ia,ic]=unique(B,'rows'); % unique is much faster after bwpack (I guess booleans are uint32 or so)
-unz=nz(ia,:); % unique non-zeros elements
-opts.SYM = true; opts.POSDEF=true;
+% find pins with similar time-courses to solve the linear system
+S0t = S0';
+[uS0,ia,ic]=unique(S0t,'rows'); % unique is much faster after bwpack (I guess booleans are uint32 or so)
+opts.SYM = true; opts.POSDEF=false;
 P=zeros(size(S0));
 
 for ii=1:length(ia)
+    % Skip 0 traces
+    if all(uS0(ii,:) == 0)
+        continue
+    end
+    % Compute linsolve of block
     lines=(ic==ii);    % lines of this block
-    nzi=unz(ii,:);     % non-zeros elements
-    P(lines,nzi) = linsolve(D(nzi,nzi),S0(lines,nzi)',opts)';
+    P(:,lines) = linsolve(D(lines,lines), S0t(lines,:), opts)';
 end
 end

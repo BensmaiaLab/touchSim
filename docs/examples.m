@@ -30,6 +30,7 @@ r = a.response(s);
 
 % Show response
 r.rate
+plot(r)
 
 %%
 % For commonly used stimuli, such as ramp-and-hold stimuli and sinusoidal
@@ -40,9 +41,8 @@ r.rate
 s = stim_sine(80,.15);
 plot(s)
 
-%%
 
-% Move stimulus 5 mm away and calculate response.
+%% Move stimulus 5 mm away and calculate response.
 s = stim_sine(80,.15,[],[],[5 0]);
 
 r2 = a.response(s);
@@ -84,3 +84,62 @@ rates(a.iSA1)=rates(a.iSA1)/max(rates(a.iSA1));
 rates(a.iRA)=rates(a.iRA)/max(rates(a.iRA));
 rates(a.iPC)=rates(a.iPC)/max(rates(a.iPC));
 plot(a,[],'rate',rates)
+
+
+%% Skin mechanics plotting - single pin
+% Sine wave
+sf = 5000; 
+rad = 0.1;
+t = (1/sf:1/sf:1)'; 
+sine_wave = sin(2*pi*80*t) * 0.5;
+
+% Pin coordinates (square pin layout for each point to be queried)
+% [x, y] = deal(linspace(-1,1,num_pins));
+[x, y] = deal(-1:rad:1);
+[X,Y] = meshgrid(x,y); 
+loc = [X(:), Y(:)];
+
+% Create stimulus trace (only assign trace to subset of pins)
+trace = zeros(length(t), size(loc,1));
+% idx = all(loc == 0, 2);
+% trace(:, idx) = sine_wave;
+trace(:, 200) = sine_wave;
+trace(:, 250) = sine_wave;
+
+
+% Create stimulus
+s = Stimulus(trace,loc,sf,rad); 
+plot_skin(s, "show_pins", true, 'max_timepoints', 100)
+
+
+%% Skin mechanics plotting - Traveling wave
+rad = 0.05;
+[x, y] = deal(-1:rad:1);
+num_pins = length(x);
+[X,Y] = meshgrid(x,y); 
+loc = [X(:), Y(:)];
+
+% Sine wave
+sf = 5000; 
+t = (1/sf:1/sf:1)'; 
+sine_wave = sin(2*pi*80*t) * 0.1;
+trace = zeros(length(t), size(loc,1));
+% Shift sine wave over x-axis
+for xi = 1:length(x)
+    idx = loc(:,1) == x(xi);
+    trace(:,idx) = repmat(sine_wave, 1, sum(idx));
+    sine_wave = circshift(sine_wave, 5);
+end
+
+% Sparsen
+for xi = 1:2:length(x)
+    idx = loc(:,1) == x(xi);
+    trace(:,idx) = 0;
+end
+for yi = 1:2:length(y)
+    idx = loc(:,2) == y(yi);
+    trace(:,idx) = 0;
+end
+
+s = Stimulus(trace,loc,sf,rad); 
+plot_skin(s, "show_pins", true, 'filepath', "C:\Users\somlab\Downloads\touchsim_test2.mp4", 'max_timepoints', 250)

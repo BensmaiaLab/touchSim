@@ -1,17 +1,26 @@
 function [dist,nodes]=distOnHand(xy_pin,xy_aff)
 
+verbose = false;
+
 % straight distance
-tic; fprintf('straight distance')
+if verbose, tic; fprintf('straight distance'); end
 dx = bsxfun(@minus,xy_pin(:,1),xy_aff(:,1)');    % (npin,nrec)
 dy = bsxfun(@minus,xy_pin(:,2),xy_aff(:,2)');    % (npin,nrec)
 dist = sqrt(dx.^2 + dy.^2);
-toc
+if verbose, toc; end
 
 % get hand boundaries + edge length table idx
-load distOnHand_boundt
+persistent bound_data
+if isempty(bound_data)
+    bound_data = load('distOnHand_boundt');
+end
+p = bound_data.p;
+r = bound_data.r;
+boundt = bound_data.boundt;
+bound = bound_data.bound;
 
 % check which paths are not straight
-tic; fprintf('find notStraightEdges   ')
+if verbose, tic; fprintf('find notStraightEdges   '); end
 kk=0;
 notStraightEdges=zeros(size(xy_pin,1)*size(xy_aff,1),2);
 for ii=1:size(xy_pin,1)
@@ -24,14 +33,14 @@ for ii=1:size(xy_pin,1)
         u1=o./n1;
         t1=(m(:,1)*s1(2)-m(:,2)*s1(1))./n1;
         % if does not cross the boundary
-        if(~isempty(find(u1<=1 & u1>=0 & t1<=1 & t1>=0,1)))
+        if any(u1<=1 & u1>=0 & t1<=1 & t1>=0)
             kk=kk+1;
             notStraightEdges(kk,:)=[ii,jj];
         end
     end
 end
 notStraightEdges=notStraightEdges(1:kk,:);
-toc
+if verbose, toc; end
 
 % list of unique (notStraight) start and ending points
 [unipin,~,icpin]=unique(notStraightEdges(:,1));
@@ -64,7 +73,7 @@ end
 % find non-zeros indices to build Dijkstra sparse matrix
 x=[bound(:,1);xy_start(unistart,1);xy_end(uniend,1)];
 y=[bound(:,2);xy_start(unistart,2);xy_end(uniend,2)];
-tic; fprintf('find non zeros indices in Dijkstra sparse matrix   ')
+if verbose, tic; fprintf('find non zeros indices in Dijkstra sparse matrix   '); end
 kk=0;
 loctable=zeros(length(x)*round(length(x)/2),2);
 for ii=1:length(x)
@@ -79,13 +88,13 @@ for ii=1:length(x)
         u1=o./n1;
         t1=(m(:,1)*s1(2)-m(:,2)*s1(1))./n1;
         % if does not cross the boundary
-        if(isempty(find(u1<=1 & u1>=0 & t1<=1 & t1>=0,1)))
+        if ~any(u1<=1 & u1>=0 & t1<=1 & t1>=0)
             kk=kk+1;
             loctable(kk,:)=[ii,jj];
         end
     end
 end
-toc
+if verbose, toc; end
 % append to indices from the border
 loctable=loctable(1:kk,:);table=[boundt;loctable];
 
@@ -95,7 +104,7 @@ R = sparse(double(table(:,2)),double(table(:,1)),double(val(:)),...
     length(x),length(x));
 
 % compute Dijkstra (loop over starting (=pin) nodes)
-tic; fprintf('run Dijkstra algorithm   ')
+if verbose, tic; fprintf('run Dijkstra algorithm   '); end
 
 lup=length(unistart);
 distDijkstra=zeros(size(icstart));
@@ -120,7 +129,7 @@ end
 % for ii=1:length(nodes)
 %     nodes{ii}=[x(nodes{ii}) y(nodes{ii})];
 % end
-toc
+if verbose, toc; end
 
 % replace dist values
 linearInd = sub2ind(size(dist), notStraightEdges(:,1), notStraightEdges(:,2));

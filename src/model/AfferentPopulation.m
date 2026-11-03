@@ -1,7 +1,7 @@
 classdef AfferentPopulation < handle
     
     properties
-        afferents@Afferent vector = Afferent.empty;
+        afferents (1,:) Afferent = Afferent.empty;
     end
     
     properties (Dependent = true)
@@ -73,6 +73,7 @@ classdef AfferentPopulation < handle
             end
             prop_struct=propagate(stim,obj,flag_distOnHand);
             % compute response
+            res(obj.num) = Response();
             for i=1:obj.num
                 res(i) = response(obj.afferents(i),prop_struct(i),...
                     flag_distOnHand);

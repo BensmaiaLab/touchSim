@@ -1,8 +1,8 @@
 classdef ResponseCollection < handle
     
     properties
-        affpop@AfferentPopulation scalar
-        responses@Response vector
+        affpop AfferentPopulation {mustBeScalarOrEmpty}
+        responses (1,:) Response
         stimulus
     end
     

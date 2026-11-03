@@ -10,11 +10,24 @@ stimi = reshape(stat_comp,[],1);
 dstimi = reshape(dyn_comp,[],1);
 
 % Make basis for post-spike current ---------------
-IF_ihbasis;
+ihbasis = IF_ihbasis();
 ih = ihbasis*reshape(aff.parameters(11:12),[],1);
 
-if aff.parameters(1)>0
-    [b,a] = butter(3,aff.parameters(1)*4/1000,'low');
+persistent filter_cache
+if isempty(filter_cache)
+    filter_cache = containers.Map('KeyType', 'double', 'ValueType', 'any');
+end
+
+cutoff = aff.parameters(1);
+if cutoff>0
+    if isKey(filter_cache, cutoff)
+        ba = filter_cache(cutoff);
+        b = ba{1};
+        a = ba{2};
+    else
+        [b,a] = butter(3,cutoff*4/1000,'low');
+        filter_cache(cutoff) = {b, a};
+    end
     stimi = filter(b,a,stimi);
     dstimi = filter(b,a,dstimi);
 end
@@ -25,7 +38,7 @@ stim_expanded = [stimi -stimi dstimi -dstimi ddstimi -ddstimi];
 stim_expanded(stim_expanded<0)=0;
 
 tau = aff.parameters(10);      % decay time const
-vleak = 0;                    % resting potential
+decay_factor = 1 - 1/tau;
 
 Iinj = stim_expanded * aff.parameters(2:7)';
 
@@ -45,15 +58,15 @@ slen = size(Iinj,1);
 nh = size(ih,1);
 ih_counter = nh+1;
 
-Vmem = vleak*ones(slen,1);
+Vmem = zeros(slen,1);
 Sp = zeros(slen,1);
 
 for ii=2:slen  % Outer loop: 1 iter per time bin of input
     
     if ih_counter>nh
-        Vmem(ii) =  Vmem(ii-1)+(-(Vmem(ii-1)-vleak)/tau + Iinj(ii));
+        Vmem(ii) =  Vmem(ii-1)*decay_factor + Iinj(ii);
     else
-        Vmem(ii) =  Vmem(ii-1)+(-(Vmem(ii-1)-vleak)/tau + Iinj(ii) + ih(ih_counter));
+        Vmem(ii) =  Vmem(ii-1)*decay_factor + Iinj(ii) + ih(ih_counter);
         ih_counter = ih_counter + 1;
     end
     

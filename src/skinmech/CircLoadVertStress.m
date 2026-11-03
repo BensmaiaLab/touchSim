@@ -26,8 +26,7 @@ function [strain,names]=CircLoadVertStress(P,PLoc,PRad,AffLoc,AffDepth)
 %nrec=size(AffLoc,1);
 
 %nu = 0.4;
-v=ver('matlab');
-if(str2double(v.Version)>9)
+if ~verLessThan('matlab', '9.0')
     x = AffLoc(:,1)'-PLoc(:,1);    % (npin,nrec)
     y = AffLoc(:,2)'-PLoc(:,2);    % (npin,nrec)
     z = ones(npin,1).*AffDepth(:)'; % (npin,nrec)

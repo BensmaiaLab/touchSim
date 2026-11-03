@@ -27,8 +27,7 @@ decay(dr<=PRad)=1/2/PRad;
 t=(1/sfreq:1/sfreq:size(dynProfile,1)/sfreq)';
 udyn=zeros(nsamp,nrec,'single');
 
-v=ver('matlab');
-if(str2double(v.Version)>9)
+if ~verLessThan('matlab', '9.0')
     for jj=1:npin
         loc_delays=t-delay(jj,:);
         F = griddedInterpolant(t,dynProfile(:,jj),'linear');
